@@ -2,6 +2,13 @@
 
 // We want each package to be responsible for its own content.
 const config = {
+  darkMode: ['class'],
+  content: [
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './lib/**/*.{ts,tsx}',
+    '../../packages/web-ui/src/**/*.{ts,tsx}',
+  ],
   theme: {
     container: {
       center: true,
