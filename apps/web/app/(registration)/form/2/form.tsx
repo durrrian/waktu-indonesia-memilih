@@ -88,7 +88,11 @@ export function Form() {
           )}
         />
 
-        <Button type='submit' className={cn('w-full')}>
+        <Button
+          type='submit'
+          className={cn('w-full')}
+          disabled={form.formState.isSubmitting || form.formState.isLoading}
+        >
           Lanjut <ArrowRight className='ml-2 w-4 h-4' />
         </Button>
       </form>

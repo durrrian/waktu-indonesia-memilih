@@ -17,7 +17,7 @@ export default async function Page() {
 
   if ((rentanUsia && !provinsi) || (!rentanUsia && !provinsi)) return redirect('/form/1')
   if (rentanUsia && provinsi && !user.vote) return redirect('/form/3')
-  if (user.vote) return redirect('/vote')
+  if (user.vote && rentanUsia && provinsi) return redirect('/vote')
 
   return (
     <Card className={cn('w-full mx-auto max-w-[400px] h-fit', 'bg-background text-foreground')}>

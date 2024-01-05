@@ -62,7 +62,7 @@ export function Form() {
             control={form.control}
             name='provinsi'
             render={({ field }) => (
-              <FormItem className='flex flex-col'>
+              <FormItem className='flex flex-col w-full'>
                 <FormLabel>Pilih domisili kamu</FormLabel>
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
@@ -70,7 +70,7 @@ export function Form() {
                       <Button
                         variant='outline'
                         role='combobox'
-                        className={cn('w-[200px] justify-between', !field.value && 'text-muted-foreground')}
+                        className={cn('w-full justify-between', !field.value && 'text-muted-foreground')}
                       >
                         {field.value
                           ? Object.values(Provinsi)
@@ -81,7 +81,7 @@ export function Form() {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className='w-[200px] p-0'>
+                  <PopoverContent className='w-full p-0'>
                     <Command>
                       <CommandInput placeholder='Cari provinsi...' />
                       <CommandEmpty>Provinsi tidak ditemukan.</CommandEmpty>
@@ -134,7 +134,11 @@ export function Form() {
           {errorMsg && <p className='text-destructive text-sm'>{errorMsg}</p>}
         </div>
 
-        <Button type='submit' className={cn('w-full')} disabled={loadingGeoloc}>
+        <Button
+          type='submit'
+          className={cn('w-full')}
+          disabled={loadingGeoloc || form.formState.isSubmitting || form.formState.isLoading}
+        >
           Lanjut <ArrowRight className='ml-2 w-4 h-4' />
         </Button>
       </form>

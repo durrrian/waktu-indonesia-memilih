@@ -15,8 +15,8 @@ export default async function Page() {
   const provinsi = user.provinsi
   const rentanUsia = user.rentanUsia
 
-  if (provinsi && !rentanUsia) return redirect('/form/2')
-  if (!user.vote) return redirect('/form/3')
+  if (provinsi && !rentanUsia && !user.vote) return redirect('/form/2')
+  if (provinsi && rentanUsia && !user.vote) return redirect('/form/3')
   if (provinsi && rentanUsia && user.vote) return redirect('/vote')
 
   return (
