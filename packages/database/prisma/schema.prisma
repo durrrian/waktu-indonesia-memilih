@@ -11,7 +11,77 @@ datasource db {
 }
 
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  email String  @unique
-  name  String?
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  clerkUserId     String          @unique
+  email           String          @unique
+  name            String
+  photoUrl        String?
+  createdAt       DateTime        @default(now())
+  rentanUsia      RentanUsia?
+  provinsi        Provinsi?
+  vote            Vote?
+
+}
+
+enum RentanUsia {
+  UNDER_17
+  BETWEEN_17_AND_25
+  BETWEEN_26_AND_35
+  BETWEEN_36_AND_45
+  OVER_45
+}
+
+enum Provinsi {
+  ACEH
+  SUMATERA_UTARA
+  SUMATERA_BARAT
+  RIAU
+  JAMBI
+  SUMATERA_SELATAN
+  BENGKULU
+  LAMPUNG
+  KEPULAUAN_BANGKA_BELITUNG
+  KEPULAUAN_RIAU
+  DKI_JAKARTA
+  JAWA_BARAT
+  JAWA_TENGAH
+  DI_YOGYAKARTA
+  JAWA_TIMUR
+  BANTEN
+  BALI
+  NUSA_TENGGARA_BARAT
+  NUSA_TENGGARA_TIMUR
+  KALIMANTAN_BARAT
+  KALIMANTAN_TENGAH
+  KALIMANTAN_SELATAN
+  KALIMANTAN_TIMUR
+  KALIMANTAN_UTARA
+  SULAWESI_UTARA
+  SULAWESI_TENGAH
+  SULAWESI_SELATAN
+  SULAWESI_TENGGARA
+  GORONTALO
+  SULAWESI_BARAT
+  MALUKU
+  MALUKU_UTARA
+  PAPUA_BARAT
+  PAPUA
+}
+
+model Candidate {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  nomorUrut       Int
+  president       String
+  vicePresident   String
+  votes           Vote[]
+}
+
+model Vote {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  user            User            @relation(fields: [userId], references: [id])
+  userId          String          @unique @db.ObjectId
+  candidate       Candidate       @relation(fields: [candidateId], references: [id])
+  candidateId     String          @db.ObjectId
+  createdAt       DateTime        @default(now())
 }

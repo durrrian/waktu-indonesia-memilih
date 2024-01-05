@@ -1,0 +1,4 @@
+.background-repeat {
+  background-image: url('/noise.svg');
+  background-repeat: repeat;
+}

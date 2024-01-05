@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
-import { DM_Sans } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import '@repo/web-ui/styles.css'
 import './globals.css'
+import { ThemeProvider } from '@/provider/theme-provider'
+import { ViewportProvider } from '@/provider/viewport-provider'
+import { QueryProvider } from '@/provider/query-provider'
+import { ClerkProvider } from '@clerk/nextjs'
+import { Toaster } from '@repo/web-ui/components'
 
-const dmSans = DM_Sans({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] })
 
 export const metadata: Metadata = {
   title: 'Create Turborepo',
@@ -12,8 +17,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
-    <html lang='en'>
-      <body className={dmSans.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang='en' suppressHydrationWarning>
+        <body className={inter.className}>
+          <QueryProvider>
+            <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+              <ViewportProvider>
+                {children}
+                <Toaster />
+              </ViewportProvider>
+            </ThemeProvider>
+          </QueryProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

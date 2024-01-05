@@ -1,0 +1,50 @@
+import { Logo } from '@/components/logo'
+import { currentUser } from '@/lib/current-user'
+import { redirectToSignIn } from '@clerk/nextjs'
+import cn from '@repo/tailwind-config/cn'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button } from '@repo/web-ui/components'
+import Link from 'next/link'
+import { notFound, redirect } from 'next/navigation'
+import { CopyButton } from './copy-button'
+
+export default async function Page() {
+  const user = await currentUser()
+
+  if (!user) return redirectToSignIn()
+
+  if (!user.provinsi) return redirect('/form/1')
+
+  if (!user.rentanUsia) return redirect('/form/2')
+
+  if (user.rentanUsia !== 'UNDER_17') return notFound()
+
+  return (
+    <Card className={cn('w-full mx-auto max-w-[400px] h-fit', 'bg-background text-foreground')}>
+      <CardHeader className={cn('grid gap-4')}>
+        <Link href='/' className='w-fit h-fit'>
+          <Logo size={60} />
+        </Link>
+
+        <div className='grid gap-2'>
+          <CardTitle>
+            <div className='flex flex-col space-y-2 text-left'>
+              <h1 className='text-xl font-semibold tracking-tight'>
+                Sorry, kamu masih belum cukup umur untuk ikutan voting 😥
+              </h1>
+            </div>
+          </CardTitle>
+          <CardDescription className={cn('text-left')}>Ada sedikit kata dari yang ngebuat tools ini.</CardDescription>
+        </div>
+      </CardHeader>
+
+      <CardContent className={cn('flex flex-col items-center justify-center gap-8')}>
+        <p className='text-justify'>
+          Supaya hasil voting ini tetap objectif, yang bisa voting hanya warna Indonesia yang sudah mempunyai hak suara.
+          Kalau kamu suka sama WIM, kamu bisa kasih tau ke temen dan keluarga kamu yang sudah punya hak suara 😉
+        </p>
+
+        <CopyButton email={user.email} />
+      </CardContent>
+    </Card>
+  )
+}
