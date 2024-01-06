@@ -48,7 +48,7 @@ export default async function Page({ searchParams }: Props) {
         <p className='text-xs text-justify select-none'>
           Dengan mengklik "Continue with Google" di atas, Anda menyatakan bahwa Anda telah membaca dan memahami, serta
           menyetujui{' '}
-          <Link href={'/kebijakan-privasi'} className='hover:text-primary' prefetch={true}>
+          <Link href={'/kebijakan-privasi'} className='hover:text-primary' prefetch={true} target='_blank'>
             Kebijakan Privasi
           </Link>{' '}
           Waktu Indonesia Memilih.

@@ -1,5 +1,6 @@
 'use client'
 
+import { AnimatePresence, motion } from 'framer-motion'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -8,7 +9,7 @@ export const PemiluCountdown = () => {
   const [countdown, setCountdown] = useState({ days: '00', hours: '00', minutes: '00', seconds: '00' })
 
   useEffect(() => {
-    const intervalId = setInterval(async () => {
+    const fetchData = async () => {
       const fetchResponse = await fetch('http://worldtimeapi.org/api/ip')
       const data = await fetchResponse.json()
 
@@ -29,21 +30,31 @@ export const PemiluCountdown = () => {
       const seconds = Math.floor((difference % (1000 * 60)) / 1000)
 
       setCountdown({
-        days: days.toString(),
-        hours: hours.toString(),
+        days: days < 10 ? `0${days}` : days.toString(),
+        hours: hours < 10 ? `0${hours}` : hours.toString(),
         minutes: minutes < 10 ? `0${minutes}` : minutes.toString(),
         seconds: seconds < 10 ? `0${seconds}` : seconds.toString(),
       })
-    }, 1000)
+    }
 
-    return () => clearInterval(intervalId) // Clear interval on component unmount
+    fetchData()
+
+    const offset = 60 - new Date().getSeconds()
+    const intervalId = setTimeout(() => {
+      fetchData()
+      setInterval(fetchData, 1000 * 60)
+    }, offset * 1000)
+
+    return () => {
+      clearTimeout(intervalId)
+    }
   }, [])
 
   const countdownArr = [
     { val: countdown.days, name: 'hari' },
     { val: countdown.hours, name: 'jam' },
     { val: countdown.minutes, name: 'menit' },
-    { val: countdown.seconds, name: 'detik' },
+    // { val: countdown.seconds, name: 'detik' },
   ]
 
   return (
@@ -61,12 +72,26 @@ export const PemiluCountdown = () => {
         <h6 className='text-primary font-medium md:text-2xl text-xl text-center'>Countdown sampe pemilu 2024!</h6>
 
         <section className='flex items-center justify-between'>
-          {countdownArr.map((entry, i) => (
-            <section key={i} className='flex flex-col items-center justify-center gap-2'>
-              <p className='text-4xl font-bold'>{entry.val}</p>
-              <p className='text-xl font-medium'>{entry.name}</p>
-            </section>
-          ))}
+          <AnimatePresence>
+            {countdownArr.map((entry, i) => (
+              <section key={i} className='flex flex-col items-center justify-center gap-2'>
+                <motion.p
+                  key={entry.val}
+                  exit={{ y: 75, opacity: 0, position: 'absolute' }}
+                  initial={{ y: -150, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{
+                    ease: 'easeOut',
+                    duration: 1,
+                  }}
+                  className='md:text-6xl text-5xl font-bold'
+                >
+                  {entry.val}
+                </motion.p>
+                <p className='text-xl font-medium'>{entry.name}</p>
+              </section>
+            ))}
+          </AnimatePresence>
         </section>
       </section>
 

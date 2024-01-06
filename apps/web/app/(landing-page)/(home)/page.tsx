@@ -1,5 +1,4 @@
-import Image from 'next/image'
-import { Button } from '@repo/web-ui/components'
+import { Button, Card, CardContent } from '@repo/web-ui/components'
 import cn from '@repo/tailwind-config/cn'
 import { ToggleTheme } from '@/components/toggle-theme'
 import { CandidatesCard } from './candidates-card'
@@ -9,8 +8,13 @@ import { VotesGroupbyAge } from './votes-groupby-age'
 import { VotesGroupbyProvince } from './votes-groupby-province'
 import { PemiluCountdown } from './pemilu-countdown'
 import { Logo } from '@/components/logo'
+import { currentUser } from '@/lib/current-user'
+import Image from 'next/image'
+import Link from 'next/link'
 
 export default async function Page() {
+  const user = await currentUser()
+
   return (
     <section className='grid gap-y-32'>
       <section className='grid md:grid-cols-[1fr_1.5fr_1fr] gap-x-8 gap-y-4'>
@@ -41,7 +45,11 @@ export default async function Page() {
             <p className='text-muted-foreground'>Orang sudah voting pilihan mereka. Seluruh data dijamin aman.</p>
           </section>
 
-          <Button className={cn('w-full')}>Ikutan voting</Button>
+          <Link href='/vote' className='w-full'>
+            <Button className={cn('w-full')} type='button' tabIndex={-1}>
+              Ikutan voting
+            </Button>
+          </Link>
         </section>
       </section>
 
@@ -62,18 +70,41 @@ export default async function Page() {
           <p className='text-muted-foreground'>Hasil voting nggak dibuat-buat dan selalu update secara realtime!</p>
         </section>
 
-        <section className='grid gap-4'>
+        <section className='grid gap-4 relative'>
+          {(!user || !user.vote) && (
+            <div className='absolute inset-0 z-50 rounded-xl flex items-center justify-center backdrop-blur-md'>
+              <Card className={cn('w-fit flex items-center justify-center flex-col p-4 gap-8 max-w-[300px]')}>
+                <Image src='/coblos.png' alt='' quality={100} draggable={false} width={128} height={128} />
+
+                <section className='grid gap-4 text-center'>
+                  <section className='grid gap-2'>
+                    <p className='text-lg font-medium'>👀 Voting dulu buat liat hasilnya.</p>
+                    <p>Tenang, data kamu dijamin aman.</p>
+                  </section>
+
+                  <Link href='/vote' className='w-full'>
+                    <Button className={cn('w-full')} type='button' tabIndex={-1}>
+                      Ikutan voting{' '}
+                    </Button>
+                  </Link>
+                </section>
+              </Card>
+            </div>
+          )}
+
           <TotalVote no1={10000} no2={8000} no3={6000} />
 
           <section className='grid md:grid-cols-2 gap-4'>
             <VotesGroupbyAge no1={10000} no2={8000} no3={6000} />
             <VotesGroupbyProvince no1={10000} no2={8000} no3={6000} />
           </section>
-        </section>
 
-        <Button className={cn('w-fit mx-auto')}>
-          Lihat seluruh metrics <ExternalLink className='w-4 h-4 ml-2' />
-        </Button>
+          <Link href='/metrics' className='w-fit mx-auto'>
+            <Button className={cn('w-fit mt-6')} type='button' tabIndex={-1}>
+              Lihat seluruh metrics <ExternalLink className='w-4 h-4 ml-2' />
+            </Button>
+          </Link>
+        </section>
       </section>
 
       <PemiluCountdown />

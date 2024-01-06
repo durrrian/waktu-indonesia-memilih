@@ -11,7 +11,7 @@ export const currentUser = async () => {
 
   const user = await db.user.findUnique({
     where: { clerkUserId: clerkUser.id },
-    include: { vote: true },
+    include: { vote: { include: { candidate: true } } },
   })
 
   return user

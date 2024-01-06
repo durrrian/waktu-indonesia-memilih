@@ -1,6 +1,13 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export const Footer = () => {
+  const pathname = usePathname()
+
+  if (pathname === '/kebijakan-privasi') return null
+
   return (
     <footer className='w-full bg-gradient-to-br from-[#A22085] to-[#600F97] py-10 mt-20 md:px-2 px-4 text-white'>
       <section className='max-w-[1100px] mx-auto grid gap-4'>

@@ -1,8 +1,37 @@
 'use client'
 
 import useViewport from '@/hooks/use-viewport'
-import { NO1_BAR_COLOR, NO2_BAR_COLOR, NO3_BAR_COLOR } from '@/lib/bar-color'
-import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { NO1_BAR_COLOR, NO2_BAR_COLOR, NO3_BAR_COLOR, makePercentage, namaKandidat } from '@/lib/recharts'
+import cn from '@repo/tailwind-config/cn'
+import { Badge } from '@repo/web-ui/components'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+
+const data = [
+  {
+    name: 'DKI Jakarta',
+    no1: 4000,
+    no2: 2400,
+    no3: 2400,
+  },
+  {
+    name: 'Jabar',
+    no1: 3000,
+    no2: 1398,
+    no3: 2210,
+  },
+  {
+    name: 'Jatim',
+    no1: 2000,
+    no2: 9800,
+    no3: 2290,
+  },
+  {
+    name: 'Jateng',
+    no1: 2780,
+    no2: 3908,
+    no3: 2000,
+  },
+]
 
 interface Props {
   no1: number
@@ -10,70 +39,74 @@ interface Props {
   no3: number
 }
 
-const namaKandidat = ['Anies & Cak Imin', 'Prabowo & Gibran', 'Ganjar & Mahfud']
-
 export const VotesGroupbyProvince = ({ no1, no2, no3 }: Props) => {
   const { xs, sm, md } = useViewport()
   const isMobile = xs || sm || md
 
-  const total = no1 + no2 + no3
-
-  const data = [
-    {
-      no1: (no1 / total) * 100,
-      no2: (no2 / total) * 100,
-      no3: (no3 / total) * 100,
-    },
-  ]
+  const percentageData = makePercentage(data)
 
   return (
     <section className='bg-background border border-border rounded-lg p-4 grid gap-8'>
       <h6 className='font-medium text-xl'>Hasil berdasarkan lokasi</h6>
       <ResponsiveContainer width='100%' height={400}>
-        <BarChart width={500} height={300} data={data} barGap={isMobile ? 40 : 100}>
-          <YAxis domain={[0, 50]} mirror={true} ticks={[0, 25, 50]} />
+        <BarChart width={500} height={300} data={percentageData} layout='vertical'>
+          <XAxis type='number' />
+
+          <YAxis type='category' dataKey='name' tick={{ fontSize: isMobile ? 12 : 15 }} />
 
           <Tooltip
             content={({ active, payload, label }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <div className='bg-secondary p-4 rounded-lg'>
+              if (!active || !payload || (payload && !payload.length)) return null
+
+              const maxValue = Math.max(...payload.map((entry) => Number(entry.value)))
+
+              return (
+                <div className='bg-secondary p-4 rounded-lg grid gap-4'>
+                  <Badge className={cn('w-fit')}>{label}</Badge>
+
+                  <section>
                     {payload.map((entry, index) => (
                       <p key={`tooltip-${index}`}>
-                        <span className='font-medium'>{namaKandidat[index]}</span>:{' '}
-                        {Math.round((Number(entry.value) * total) / 100).toLocaleString()} vote
+                        <span
+                          className={cn(
+                            Number(entry.value) === maxValue ? 'text-primary' : 'text-foreground',
+                            'font-medium',
+                          )}
+                        >
+                          {namaKandidat[index]}:{' '}
+                        </span>
+
+                        <strong className={cn(Number(entry.value) === maxValue ? 'text-primary' : 'text-foreground')}>
+                          {Math.round(Number(entry.value))}%
+                        </strong>
                       </p>
                     ))}
-                  </div>
-                )
-              }
-
-              return null
-            }}
-          />
-
-          <Legend
-            content={({ payload }) => {
-              return (
-                <ul className='flex items-center justify-center gap-8 mt-4'>
-                  {payload?.map((entry, index) => {
-                    return (
-                      <li key={`item-${index}`} className='flex items-center justify-center gap-2'>
-                        <div className='w-4 h-4 rounded-full' style={{ backgroundColor: entry.color }} />
-                        {namaKandidat[index]}
-                      </li>
-                    )
-                  })}
-                </ul>
+                  </section>
+                </div>
               )
             }}
           />
 
-          <Bar dataKey='no1' fill={NO1_BAR_COLOR} radius={[10, 10, 0, 0]} />
+          <Legend
+            content={({ payload }) => (
+              <ul className='flex items-center justify-center flex-wrap gap-x-8 gap-y-4 mt-4'>
+                {payload?.map((entry, index) => {
+                  return (
+                    <li key={`item-${index}`} className='flex items-center justify-center gap-1'>
+                      <div className='w-4 h-4 rounded-full' style={{ backgroundColor: entry.color }} />
+                      {namaKandidat[index]}
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          />
 
-          <Bar dataKey='no2' fill={NO2_BAR_COLOR} radius={[10, 10, 0, 0]} />
+          <Bar dataKey='no1' fill={NO1_BAR_COLOR} stackId='a' radius={[0, 0, 0, 0]} />
 
-          <Bar dataKey='no3' fill={NO3_BAR_COLOR} radius={[10, 10, 0, 0]} />
+          <Bar dataKey='no2' fill={NO2_BAR_COLOR} stackId='a' radius={[0, 0, 0, 0]} />
+
+          <Bar dataKey='no3' fill={NO3_BAR_COLOR} stackId='a' radius={[0, 10, 10, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </section>

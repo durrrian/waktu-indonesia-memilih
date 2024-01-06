@@ -6,6 +6,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button } fro
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { CopyButton } from './copy-button'
+import { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'WIM — Belum bisa vote',
+  }
+}
 
 export default async function Page() {
   const user = await currentUser()
@@ -19,7 +26,7 @@ export default async function Page() {
   if (user.rentanUsia !== 'UNDER_17') return notFound()
 
   return (
-    <Card className={cn('w-full mx-auto max-w-[400px] h-fit', 'bg-background text-foreground')}>
+    <Card className={cn('w-full mx-auto max-w-[500px] h-fit', 'bg-background text-foreground')}>
       <CardHeader className={cn('grid gap-4')}>
         <Link href='/' className='w-fit h-fit'>
           <Logo size={60} />

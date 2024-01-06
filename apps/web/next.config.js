@@ -1,5 +1,16 @@
+const withMDX = require('@next/mdx')()
+
 /** @type {import('next').NextConfig} */
-module.exports = {
+const nextConfig = {
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+
   reactStrictMode: true,
-  transpilePackages: ['@repo/ui'],
+
+  transpilePackages: ['@repo/web-ui'],
+
+  experimental: {
+    serverMinification: false,
+  },
 }
+
+module.exports = withMDX(nextConfig)

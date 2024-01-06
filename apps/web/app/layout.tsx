@@ -7,6 +7,7 @@ import { ViewportProvider } from '@/provider/viewport-provider'
 import { QueryProvider } from '@/provider/query-provider'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from '@repo/web-ui/components'
+import { KeystrokesProvider } from '@/provider/keystroke-provider'
 
 const inter = Inter({ subsets: ['latin'], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] })
 
@@ -23,8 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
           <QueryProvider>
             <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
               <ViewportProvider>
-                {children}
-                <Toaster />
+                <KeystrokesProvider>
+                  {children}
+                  <Toaster />
+                </KeystrokesProvider>
               </ViewportProvider>
             </ThemeProvider>
           </QueryProvider>

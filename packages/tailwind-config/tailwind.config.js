@@ -7,6 +7,7 @@ const config = {
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
+    './mdx-components.tsx',
     '../../packages/web-ui/src/**/*.{ts,tsx}',
   ],
   theme: {

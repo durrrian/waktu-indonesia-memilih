@@ -20,7 +20,7 @@ export default async function Page() {
   if (user.vote) return redirect('/vote')
 
   return (
-    <Card className={cn('w-full mx-auto max-w-[400px] h-fit', 'bg-background text-foreground')}>
+    <Card className={cn('w-full mx-auto max-w-[500px] h-fit', 'bg-background text-foreground')}>
       <CardHeader className={cn('grid gap-4')}>
         <Link href='/' className='w-fit h-fit'>
           <Logo size={60} />

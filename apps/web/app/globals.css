@@ -2,3 +2,14 @@
   background-image: url('/noise.svg');
   background-repeat: repeat;
 }
+
+.cursor-coblos {
+  cursor: url('/coblos.png'), auto;
+}
+
+body {
+  scrollbar-gutter: stable;
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
+}

@@ -39,7 +39,17 @@ export function ViewportProvider({ children }: { children: ReactNode }): ReactEl
       setXl(width >= 1280 && width < 1536)
       setXxl(width >= 1536)
 
-      setViewport(width)
+      const innerWidth = window.innerWidth
+
+      setXs(innerWidth < 640)
+      setSm(innerWidth >= 640 && innerWidth < 768)
+      setMd(innerWidth >= 768 && innerWidth < 1024)
+      setLg(innerWidth >= 1024 && innerWidth < 1280)
+      setXl(innerWidth >= 1280 && innerWidth < 1536)
+      setXl(innerWidth >= 1280 && innerWidth < 1536)
+      setXxl(innerWidth >= 1536)
+
+      setViewport(innerWidth)
     }
 
     // Initial check on component mount

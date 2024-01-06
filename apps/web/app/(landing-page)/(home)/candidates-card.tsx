@@ -1,26 +1,27 @@
 'use client'
 
 import useViewport from '@/hooks/use-viewport'
+import { candidateParty } from '@/lib/candidate-party'
 import cn from '@repo/tailwind-config/cn'
 import { Card, CardContent, CardHeader, Badge } from '@repo/web-ui/components'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useState } from 'react'
 
 const candidates = [
   {
     president: 'Anies Rasyid Baswedan',
     vicePresident: 'Muhaimin Iskandar',
-    party: ['PKS', 'PKB', 'NASDEM'],
+    party: candidateParty[0].party,
   },
   {
     president: 'Prabowo Subianto',
     vicePresident: 'Gibran Rakabuming Raka',
-    party: ['PSI', 'PAN', 'DEMOKRAT', 'GOLKAR', 'GERINDRA'],
+    party: candidateParty[1].party,
   },
   {
     president: 'Ganjar Pranowo',
     vicePresident: 'Mahfud MD',
-    party: ['HANURA', 'PERINDO', 'PPP', 'PDIP'],
+    party: candidateParty[2].party,
   },
 ]
 
@@ -29,26 +30,28 @@ export const CandidatesCard = () => {
 
   const isMobile = md || sm || xs
 
-  useEffect(() => {
-    console.log('isMobile', isMobile)
-    console.log('md', md)
-    console.log('sm', sm)
-    console.log('xs', xs)
-  }, [isMobile, md, sm, xs])
+  const [isMouseHover, setIsMouseHover] = useState(false)
 
   return (
     <section
       className={cn(
-        // isMobile ? (md ? 'grid grid-cols-3 gap-x-2' : 'w-full h-fit grid gap-y-4') : 'w-[1000px] h-80 relative mx-auto',
-        isMobile && !md ? 'w-full h-fit grid gap-y-4' : '',
-        isMobile && md ? 'grid grid-cols-3 gap-x-2' : '',
-        !isMobile ? 'w-[1000px] h-80 relative mx-auto' : '',
+        isMobile
+          ? md
+            ? 'grid grid-cols-3 gap-x-2'
+            : 'w-full h-fit grid gap-y-4'
+          : 'w-[1000px] h-[19.5rem] relative mx-auto',
+        isMouseHover ? 'cursor-coblos' : '',
       )}
+      onMouseEnter={() => setIsMouseHover(true)}
+      onMouseLeave={() => setIsMouseHover(false)}
     >
       {candidates.map((candidate, i) => (
         <Card
           key={i}
-          className={cn('bg-background text-foreground w-full p-0 h-fit', isMobile ? '' : 'absolute max-w-[350px]')}
+          className={cn(
+            'bg-background text-foreground w-full p-0 h-fit md:h-full',
+            isMobile ? '' : 'absolute max-w-[350px]',
+          )}
           style={{
             transform: isMobile
               ? undefined
@@ -77,7 +80,7 @@ export const CandidatesCard = () => {
               ))}
             </div>
           </CardHeader>
-          <CardContent className={cn('flex flex-col items-center justify-center gap-y-4 p-0 h-full')}>
+          <CardContent className={cn('flex flex-col items-center justify-center gap-y-4 p-0 h-fit')}>
             <section className='flex flex-col items-center justify-center gap-y-2 text-lg font-bold'>
               <p>{candidate.president}</p>
               <p>{candidate.vicePresident}</p>
