@@ -6,10 +6,11 @@
   "scripts": {
     "with-env": "dotenv -e ../../.env --",
     "start-nodemon": "nodemon ./dist/index.js",
-    "start": "pnpm run with-env pnpm run start-nodemon",
+    "start-dev": "pnpm run with-env pnpm run start-nodemon",
+    "start-prod": "node ./dist/index.js",
     "watch": "tsc -w",
     "watch-with-env": "pnpm run with-env pnpm run watch",
-    "dev": "pnpm run watch-with-env & pnpm run start",
+    "dev": "pnpm run watch-with-env & pnpm run start-dev",
     "build": "tsc"
   },
   "dependencies": {
