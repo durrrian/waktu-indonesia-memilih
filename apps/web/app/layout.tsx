@@ -10,6 +10,7 @@ import { Toaster } from '@repo/web-ui/components'
 import { KeystrokesProvider } from '@/provider/keystroke-provider'
 import meta from './meta'
 import viewportNext from './viewport'
+import { SocketProvider } from '@/provider/socket-provider'
 
 const inter = Inter({ subsets: ['latin'], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] })
 
@@ -22,16 +23,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
     <ClerkProvider>
       <html lang='en' suppressHydrationWarning>
         <body className={inter.className}>
-          <QueryProvider>
-            <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-              <ViewportProvider>
-                <KeystrokesProvider>
-                  {children}
-                  <Toaster />
-                </KeystrokesProvider>
-              </ViewportProvider>
-            </ThemeProvider>
-          </QueryProvider>
+          <SocketProvider>
+            <QueryProvider>
+              <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+                <ViewportProvider>
+                  <KeystrokesProvider>
+                    {children}
+                    <Toaster />
+                  </KeystrokesProvider>
+                </ViewportProvider>
+              </ThemeProvider>
+            </QueryProvider>
+          </SocketProvider>
         </body>
       </html>
     </ClerkProvider>

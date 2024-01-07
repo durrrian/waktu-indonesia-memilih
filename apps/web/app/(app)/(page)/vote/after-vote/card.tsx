@@ -25,7 +25,7 @@ export const Card = ({ vote, logo }: Props) => {
 
       <section className='max-w-[300px] flex items-center justify-between w-full'>
         <p className='w-fit h-fit px-2 py-1 rounded-md border border-border text-gray-500 text-sm'>
-          {format(new Date(vote.createdAt), 'dd MMMM yyyy')}
+          {new Date(vote.createdAt).toLocaleString('id-ID', { dateStyle: 'long' })}
         </p>
 
         <Logo theme='light' size={50} />

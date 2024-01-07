@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { TotalVote } from './total-vote'
 import { VotesGroupbyAge } from './votes-groupby-age'
 import { VotesGroupbyProvince } from './votes-groupby-province'
-import { Counter } from '../counter'
+import { db } from '@repo/database'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -20,6 +20,8 @@ export default async function Page() {
 
   if (!user.vote) return redirect('/vote')
 
+  const vote = await db.vote.findMany({ include: { user: true, candidate: true } })
+
   return (
     <section className='grid gap-10 w-full'>
       <section className='grid gap-4'>
@@ -31,11 +33,15 @@ export default async function Page() {
       </section>
 
       <section className='grid gap-8 relative'>
-        <TotalVote no1={10000} no2={8000} no3={6000} />
+        <TotalVote
+          no1={vote.filter((val) => val.candidate.nomorUrut === 1).length}
+          no2={vote.filter((val) => val.candidate.nomorUrut === 2).length}
+          no3={vote.filter((val) => val.candidate.nomorUrut === 3).length}
+        />
 
-        <VotesGroupbyAge no1={10000} no2={8000} no3={6000} />
+        <VotesGroupbyAge vote={vote} />
 
-        <VotesGroupbyProvince no1={10000} no2={8000} no3={6000} />
+        <VotesGroupbyProvince vote={vote} />
       </section>
     </section>
   )

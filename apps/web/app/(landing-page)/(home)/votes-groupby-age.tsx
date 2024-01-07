@@ -5,43 +5,50 @@ import { NO1_BAR_COLOR, NO2_BAR_COLOR, NO3_BAR_COLOR, makePercentage, namaKandid
 import cn from '@repo/tailwind-config/cn'
 import { Badge } from '@repo/web-ui/components'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-
-const data = [
-  {
-    name: '17—25',
-    no1: 4000,
-    no2: 2400,
-    no3: 2400,
-  },
-  {
-    name: '26—35',
-    no1: 3000,
-    no2: 1398,
-    no3: 2210,
-  },
-  {
-    name: '36—45',
-    no1: 2000,
-    no2: 9800,
-    no3: 2290,
-  },
-  {
-    name: '45>',
-    no1: 2780,
-    no2: 3908,
-    no3: 2000,
-  },
-]
+import { Vote, Candidate, User } from '@prisma/client'
 
 interface Props {
-  no1: number
-  no2: number
-  no3: number
+  vote: (Vote & { candidate: Candidate } & { user: User })[]
 }
 
-export const VotesGroupbyAge = ({ no1, no2, no3 }: Props) => {
+export const VotesGroupbyAge = ({ vote }: Props) => {
   const { xs, sm, md } = useViewport()
   const isMobile = xs || sm || md
+
+  const filterData: { rentanUsia: '17—25' | '26—35' | '36—45' | '45>'; nomorUrut: 1 | 2 | 3 }[] = vote.map((val) => {
+    const rentanUsia = (() => {
+      if (val.user.rentanUsia === 'BETWEEN_17_AND_25') return '17—25'
+      if (val.user.rentanUsia === 'BETWEEN_26_AND_35') return '26—35'
+      if (val.user.rentanUsia === 'BETWEEN_36_AND_45') return '36—45'
+      if (val.user.rentanUsia === 'OVER_45') return '45>'
+
+      return '17—25'
+    })()
+
+    return {
+      rentanUsia,
+      nomorUrut: val.candidate.nomorUrut as 1 | 2 | 3,
+    }
+  })
+
+  const data = filterData.reduce(
+    (
+      acc: { name: '17—25' | '26—35' | '36—45' | '45>'; no1: number; no2: number; no3: number; [key: string]: any }[],
+      val,
+    ) => {
+      const index = acc.findIndex((item) => item.name === val.rentanUsia)
+      if (index !== -1) {
+        acc[index]['no' + val.nomorUrut]++
+      }
+      return acc
+    },
+    [
+      { name: '17—25', no1: 0, no2: 0, no3: 0 },
+      { name: '26—35', no1: 0, no2: 0, no3: 0 },
+      { name: '36—45', no1: 0, no2: 0, no3: 0 },
+      { name: '45>', no1: 0, no2: 0, no3: 0 },
+    ],
+  )
 
   const percentageData = makePercentage(data)
 
@@ -65,22 +72,21 @@ export const VotesGroupbyAge = ({ no1, no2, no3 }: Props) => {
                   <Badge className={cn('w-fit')}>{label} tahun</Badge>
 
                   <section>
-                    {payload.map((entry, index) => (
-                      <p key={`tooltip-${index}`}>
-                        <span
-                          className={cn(
-                            Number(entry.value) === maxValue ? 'text-primary' : 'text-foreground',
-                            'font-medium',
-                          )}
-                        >
-                          {namaKandidat[index]}:{' '}
-                        </span>
+                    {payload.map((entry, index) => {
+                      const isMaxValue = Number(entry.value) === maxValue && Number(entry.value) !== 0
 
-                        <strong className={cn(Number(entry.value) === maxValue ? 'text-primary' : 'text-foreground')}>
-                          {Math.round(Number(entry.value))}%
-                        </strong>
-                      </p>
-                    ))}
+                      return (
+                        <p key={`tooltip-${index}`}>
+                          <span className={cn(isMaxValue ? 'text-primary' : 'text-foreground', 'font-medium')}>
+                            {namaKandidat[index]}:{' '}
+                          </span>
+
+                          <strong className={cn(isMaxValue ? 'text-primary' : 'text-foreground')}>
+                            {Math.round(Number(entry.value))}%
+                          </strong>
+                        </p>
+                      )
+                    })}
                   </section>
                 </div>
               )

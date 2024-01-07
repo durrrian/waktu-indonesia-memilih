@@ -95,7 +95,7 @@ export function Form() {
         <Button
           type='submit'
           className={cn('w-full')}
-          disabled={form.formState.isSubmitting || form.formState.isLoading}
+          disabled={form.formState.isSubmitting || form.formState.isLoading || isPending}
         >
           {isPending && <LoadingSpinner className='mr-2' />} Lanjut <ArrowRight className='ml-2 w-4 h-4' />
         </Button>

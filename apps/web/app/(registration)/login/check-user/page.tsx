@@ -1,6 +1,7 @@
 import { currentUser } from '@clerk/nextjs'
 import { db } from '@repo/database'
 import { notFound, redirect } from 'next/navigation'
+import sendWelcomeEmail from 'defer/src/sendWelcomeEmail'
 
 interface Prop {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -32,7 +33,9 @@ export default async function Page({ searchParams }: Prop) {
   const form2 = redirectUrlParam ? `/form/2?redirect_url=${redirectUrlParam}` : '/form/2'
 
   if (!user) {
-    await db.user.create({ data: { clerkUserId, email: emailAddress.emailAddress, name, photoUrl } })
+    const response = await db.user.create({ data: { clerkUserId, email: emailAddress.emailAddress, name, photoUrl } })
+
+    await sendWelcomeEmail(response.email, response.name)
 
     return redirect(form1)
   }

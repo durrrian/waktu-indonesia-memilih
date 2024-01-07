@@ -1,7 +1,10 @@
 'use client'
 
+import { useSocket } from '@/hooks/use-socket'
 import useViewport from '@/hooks/use-viewport'
 import { NO1_BAR_COLOR, NO2_BAR_COLOR, NO3_BAR_COLOR, namaKandidat } from '@/lib/recharts'
+import { SocketMessage } from '@/provider/socket-provider'
+import { useEffect, useState } from 'react'
 import { BarChart, Bar, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 interface Props {
@@ -10,25 +13,90 @@ interface Props {
   no3: number
 }
 
+const makePercentage = (
+  incomingData: {
+    no1: number
+    no2: number
+    no3: number
+  }[],
+) => {
+  const data = incomingData[0]
+
+  const total = data.no1 + data.no2 + data.no3
+
+  return {
+    data: [
+      {
+        no1: Math.round((data.no1 * 100) / total),
+        no2: Math.round((data.no2 * 100) / total),
+        no3: Math.round((data.no3 * 100) / total),
+      },
+    ],
+    total,
+  }
+}
+
 export const TotalVote = ({ no1, no2, no3 }: Props) => {
   const { xs, sm, md } = useViewport()
   const isMobile = xs || sm || md
 
-  const total = no1 + no2 + no3
-
-  const data = [
+  const initialData = [
     {
-      no1: (no1 / total) * 100,
-      no2: (no2 / total) * 100,
-      no3: (no3 / total) * 100,
+      no1,
+      no2,
+      no3,
     },
   ]
+
+  const [data, setData] = useState(initialData)
+
+  const { socket } = useSocket()
+
+  useEffect(() => {
+    if (!socket) return
+
+    const handler = (message: SocketMessage) => {
+      if (message.vote) {
+        setData((prev) => {
+          if (message.nomorUrut === 1) {
+            const data = { ...prev[0] }
+
+            data.no1 = data.no1 + 1
+
+            return [data]
+          }
+
+          if (message.nomorUrut === 2) {
+            const data = { ...prev[0] }
+
+            data.no2 = data.no2 + 1
+
+            return [data]
+          }
+
+          const data = { ...prev[0] }
+
+          data.no3 = data.no3 + 1
+
+          return [data]
+        })
+      }
+    }
+
+    socket.on('vote', handler)
+
+    return () => {
+      socket.off('vote', handler)
+    }
+  }, [socket])
+
+  const { total, data: transformedData } = makePercentage(data)
 
   return (
     <section className='bg-background border border-border rounded-lg p-4 grid gap-8'>
       <h6 className='font-medium text-xl'>Pasangan yang unggul</h6>
       <ResponsiveContainer width='100%' height={400}>
-        <BarChart width={500} height={300} data={data} barGap={isMobile ? 40 : 100}>
+        <BarChart width={500} height={300} data={transformedData} barGap={isMobile ? 40 : 100}>
           <YAxis domain={[0, 50]} mirror={true} ticks={[0, 25, 50]} />
 
           <Tooltip

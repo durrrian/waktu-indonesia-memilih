@@ -17,6 +17,7 @@ import { Fragment } from 'react'
 import { useClerk } from '@clerk/nextjs'
 import { bindKeyCombo } from '@rwh/react-keystrokes'
 import { ToggleTheme } from '@/components/toggle-theme'
+import { Logo } from '@/components/logo'
 
 export const Header = () => {
   const menu = [
@@ -83,6 +84,10 @@ export const Header = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <Link href='/' className='block w-fit h-fit'>
+        <Logo />
+      </Link>
 
       <ToggleTheme />
     </nav>

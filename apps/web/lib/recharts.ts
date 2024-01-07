@@ -20,9 +20,9 @@ export const makePercentage = (
   // Calculate percentage of votes for each candidate in each age group
   const percentageData = totalVotesPerAgeGroup.map((item) => ({
     name: item.name,
-    no1: (item.no1 / item.total) * 100,
-    no2: (item.no2 / item.total) * 100,
-    no3: (item.no3 / item.total) * 100,
+    no1: item.no1 !== 0 ? (item.no1 / item.total) * 100 : 0,
+    no2: item.no2 !== 0 ? (item.no2 / item.total) * 100 : 0,
+    no3: item.no3 !== 0 ? (item.no3 / item.total) * 100 : 0,
   }))
 
   return percentageData

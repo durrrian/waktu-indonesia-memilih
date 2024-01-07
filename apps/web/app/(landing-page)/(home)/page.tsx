@@ -11,9 +11,13 @@ import { Logo } from '@/components/logo'
 import { currentUser } from '@/lib/current-user'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Counter } from './couter'
+import { db } from '@repo/database'
 
 export default async function Page() {
   const user = await currentUser()
+
+  const vote = await db.vote.findMany({ include: { user: true, candidate: true } })
 
   return (
     <section className='grid gap-y-32'>
@@ -35,22 +39,7 @@ export default async function Page() {
           </h2>
         </section>
 
-        <section className='flex flex-col items-center justify-between bg-background rounded-lg shadow-sm p-6 border border-border gap-y-4'>
-          <section className='w-full'>
-            <div className='grid place-items-start'>
-              <h3 className='text-4xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-primary to-foreground'>
-                12,500
-              </h3>
-            </div>
-            <p className='text-muted-foreground'>Orang sudah voting pilihan mereka. Seluruh data dijamin aman.</p>
-          </section>
-
-          <Link href='/vote' className='w-full'>
-            <Button className={cn('w-full')} type='button' tabIndex={-1}>
-              Ikutan voting
-            </Button>
-          </Link>
-        </section>
+        <Counter initialData={vote.length} />
       </section>
 
       <section className='flex items-center justify-center flex-col gap-10 text-foreground font-bold md:text-4xl text-2xl'>
@@ -92,11 +81,15 @@ export default async function Page() {
             </div>
           )}
 
-          <TotalVote no1={10000} no2={8000} no3={6000} />
+          <TotalVote
+            no1={vote.filter((val) => val.candidate.nomorUrut === 1).length}
+            no2={vote.filter((val) => val.candidate.nomorUrut === 2).length}
+            no3={vote.filter((val) => val.candidate.nomorUrut === 3).length}
+          />
 
           <section className='grid md:grid-cols-2 gap-4'>
-            <VotesGroupbyAge no1={10000} no2={8000} no3={6000} />
-            <VotesGroupbyProvince no1={10000} no2={8000} no3={6000} />
+            <VotesGroupbyAge vote={vote} />
+            <VotesGroupbyProvince vote={vote} />
           </section>
 
           <Link href='/metrics' className='w-fit mx-auto'>

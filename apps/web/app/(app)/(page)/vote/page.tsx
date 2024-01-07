@@ -3,7 +3,6 @@ import { SuratSuara } from './surat-suara'
 import { db } from '@repo/database'
 import { currentUser } from '@/lib/current-user'
 import { redirect } from 'next/navigation'
-import { Counter } from '../counter'
 import { AfterVote } from './after-vote'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -24,9 +23,9 @@ export default async function Page() {
   return (
     <div className='w-full h-fit flex flex-col items-center justify-center gap-20'>
       {(() => {
-        if (!vote) return <SuratSuara candidates={candidates} />
+        if (!vote) return <SuratSuara candidates={candidates} user={user} />
 
-        return <AfterVote vote={vote} />
+        return <AfterVote vote={vote} user={user} />
       })()}
     </div>
   )

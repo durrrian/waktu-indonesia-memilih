@@ -5,51 +5,105 @@ import { NO1_BAR_COLOR, NO2_BAR_COLOR, NO3_BAR_COLOR, makePercentage, namaKandid
 import cn from '@repo/tailwind-config/cn'
 import { Badge } from '@repo/web-ui/components'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-
-const data = [
-  {
-    name: '17—25',
-    no1: 4000,
-    no2: 2400,
-    no3: 2400,
-  },
-  {
-    name: '26—35',
-    no1: 3000,
-    no2: 1398,
-    no3: 2210,
-  },
-  {
-    name: '36—45',
-    no1: 2000,
-    no2: 9800,
-    no3: 2290,
-  },
-  {
-    name: '45>',
-    no1: 2780,
-    no2: 3908,
-    no3: 2000,
-  },
-]
+import { Vote, Candidate, User } from '@prisma/client'
+import { useEffect, useState } from 'react'
+import { useSocket } from '@/hooks/use-socket'
+import { SocketMessage } from '@/provider/socket-provider'
 
 interface Props {
-  no1: number
-  no2: number
-  no3: number
+  vote: (Vote & { candidate: Candidate } & { user: User })[]
 }
 
-export const VotesGroupbyAge = ({ no1, no2, no3 }: Props) => {
+export const VotesGroupbyAge = ({ vote }: Props) => {
   const { xs, sm, md } = useViewport()
   const isMobile = xs || sm || md
 
-  const percentageData = makePercentage(data)
+  const filterData: { rentanUsia: '17—25' | '26—35' | '36—45' | '45>'; nomorUrut: 1 | 2 | 3 }[] = vote.map((val) => {
+    const rentanUsia = (() => {
+      if (val.user.rentanUsia === 'BETWEEN_17_AND_25') return '17—25'
+      if (val.user.rentanUsia === 'BETWEEN_26_AND_35') return '26—35'
+      if (val.user.rentanUsia === 'BETWEEN_36_AND_45') return '36—45'
+      if (val.user.rentanUsia === 'OVER_45') return '45>'
+
+      return '17—25'
+    })()
+
+    return {
+      rentanUsia,
+      nomorUrut: val.candidate.nomorUrut as 1 | 2 | 3,
+    }
+  })
+
+  const initialData = filterData.reduce(
+    (
+      acc: { name: '17—25' | '26—35' | '36—45' | '45>'; no1: number; no2: number; no3: number; [key: string]: any }[],
+      val,
+    ) => {
+      const index = acc.findIndex((item) => item.name === val.rentanUsia)
+      if (index !== -1) {
+        acc[index]['no' + val.nomorUrut]++
+      }
+      return acc
+    },
+    [
+      { name: '17—25', no1: 0, no2: 0, no3: 0 },
+      { name: '26—35', no1: 0, no2: 0, no3: 0 },
+      { name: '36—45', no1: 0, no2: 0, no3: 0 },
+      { name: '45>', no1: 0, no2: 0, no3: 0 },
+    ],
+  )
+
+  const [data, setData] = useState(initialData)
+
+  const { socket } = useSocket()
+
+  useEffect(() => {
+    if (!socket) return
+
+    const handler = (message: SocketMessage) => {
+      if (!message.vote) return
+
+      const renderRentanUsia = (() => {
+        if (message.rentanUsia === 'BETWEEN_17_AND_25') return '17—25'
+        if (message.rentanUsia === 'BETWEEN_26_AND_35') return '26—35'
+        if (message.rentanUsia === 'BETWEEN_36_AND_45') return '36—45'
+
+        return '45>'
+      })()
+
+      setData((prev) => {
+        const prevData = [...prev]
+
+        const index = prevData.findIndex((val) => val.name === renderRentanUsia)
+
+        if (message.nomorUrut === 1) {
+          prevData[index].no1 = prevData[index].no1 + 1
+        }
+
+        if (message.nomorUrut === 2) {
+          prevData[index].no2 = prevData[index].no2 + 1
+        }
+
+        if (message.nomorUrut === 3) {
+          prevData[index].no3 = prevData[index].no3 + 1
+        }
+
+        return prevData
+      })
+    }
+
+    socket.on('vote', handler)
+
+    return () => {
+      socket.off('vote', handler)
+    }
+  }, [socket])
 
   return (
     <section className='bg-background border border-border rounded-lg p-4 grid gap-8'>
       <h6 className='font-medium text-xl'>Hasil berdasarkan usia</h6>
       <ResponsiveContainer width='100%' height={400}>
-        <BarChart width={500} height={300} data={percentageData} layout='vertical'>
+        <BarChart width={500} height={300} data={makePercentage(data)} layout='vertical'>
           <XAxis type='number' />
 
           <YAxis type='category' dataKey='name' tick={{ fontSize: isMobile ? 12 : 15 }} />
@@ -65,22 +119,21 @@ export const VotesGroupbyAge = ({ no1, no2, no3 }: Props) => {
                   <Badge className={cn('w-fit')}>{label} tahun</Badge>
 
                   <section>
-                    {payload.map((entry, index) => (
-                      <p key={`tooltip-${index}`}>
-                        <span
-                          className={cn(
-                            Number(entry.value) === maxValue ? 'text-primary' : 'text-foreground',
-                            'font-medium',
-                          )}
-                        >
-                          {namaKandidat[index]}:{' '}
-                        </span>
+                    {payload.map((entry, index) => {
+                      const isMaxValue = Number(entry.value) === maxValue && Number(entry.value) !== 0
 
-                        <strong className={cn(Number(entry.value) === maxValue ? 'text-primary' : 'text-foreground')}>
-                          {Math.round(Number(entry.value))}%
-                        </strong>
-                      </p>
-                    ))}
+                      return (
+                        <p key={`tooltip-${index}`}>
+                          <span className={cn(isMaxValue ? 'text-primary' : 'text-foreground', 'font-medium')}>
+                            {namaKandidat[index]}:{' '}
+                          </span>
+
+                          <strong className={cn(isMaxValue ? 'text-primary' : 'text-foreground')}>
+                            {Math.round(Number(entry.value))}%
+                          </strong>
+                        </p>
+                      )
+                    })}
                   </section>
                 </div>
               )

@@ -1,10 +1,10 @@
 'use client'
 
-import { Vote, Candidate } from '@prisma/client'
+import { Vote, Candidate, User } from '@prisma/client'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import JSConfetti from 'js-confetti'
-import { Button, Carousel, CarouselApi, CarouselContent, CarouselItem } from '@repo/web-ui/components'
+import { Button, Carousel, CarouselApi, CarouselContent, CarouselItem, LoadingSpinner } from '@repo/web-ui/components'
 import { Card } from './card'
 import LogoWIM from './svg/logo.svg'
 import Nomor1 from './svg/no_1.svg'
@@ -13,16 +13,22 @@ import Nomor3 from './svg/no_3.svg'
 import Autoplay from 'embla-carousel-autoplay'
 import { motion } from 'framer-motion'
 import cn from '@repo/tailwind-config/cn'
-import { Download, Link } from 'lucide-react'
+import { Check, Download, Link } from 'lucide-react'
+import satori from 'satori'
 
 interface Props {
   vote: Vote & { candidate: Candidate }
+  user: User
 }
 
-export const AfterVote = ({ vote }: Props) => {
+export const AfterVote = ({ vote, user }: Props) => {
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
+
+  const [successCopy, setSuccessCopy] = useState(false)
+
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!api) {
@@ -45,6 +51,18 @@ export const AfterVote = ({ vote }: Props) => {
       confettiNumber: 300,
     })
   }, [])
+
+  const copyLink = async (text: string) => {
+    await navigator.clipboard.writeText(text)
+
+    setSuccessCopy(true)
+
+    setTimeout(() => {
+      setSuccessCopy(false)
+    }, 3000)
+
+    return
+  }
 
   return (
     <section className='w-full grid gap-20'>
@@ -102,11 +120,57 @@ export const AfterVote = ({ vote }: Props) => {
           </Carousel>
 
           <section className='flex flex-col gap-4'>
-            <Button size='sm' variant='outline'>
-              Download gambar <Download className='w-4 h-4 ml-2' />
+            <Button
+              size='sm'
+              variant='outline'
+              onClick={async () => {
+                setLoading(true)
+
+                const response = await fetch(`/api/download-image?showImage=${current === 1 ? 'false' : 'true'}`)
+                const blob = await response.blob()
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'Waktu Indonesia Memilih.png' // or any other filename you want
+                a.style.display = 'none'
+                document.body.appendChild(a)
+                a.click()
+                window.URL.revokeObjectURL(url)
+                document.body.removeChild(a)
+
+                setLoading(false)
+              }}
+              disabled={loading}
+            >
+              {loading && <LoadingSpinner className='mr-2' />} Download gambar <Download className='w-4 h-4 ml-2' />
             </Button>
-            <Button size='sm'>
-              Bagiin ke medsos <Link className='w-4 h-4 ml-2' />
+
+            <Button
+              size='sm'
+              onClick={async () => {
+                if (current === 1) {
+                  await copyLink(
+                    `https://waktuindonesiamemilih.id?ref=${encodeURIComponent(user.email)}&showImage=false`,
+                  )
+                } else {
+                  await copyLink(
+                    `https://waktuindonesiamemilih.id?ref=${encodeURIComponent(user.email)}&showImage=true`,
+                  )
+                }
+              }}
+              disabled={successCopy}
+            >
+              {!successCopy ? (
+                <>
+                  Bagikan link
+                  <Link className='w-4 h-4 ml-2' />
+                </>
+              ) : (
+                <>
+                  <Check className='w-4 h-4 mr-2' />
+                  Sukses copy link
+                </>
+              )}
             </Button>
           </section>
         </section>

@@ -10,7 +10,8 @@
     "NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL",
     "RESEND_API_KEY",
     "DEFER_TOKEN",
-    "NEXT_PUBLIC_WEBSOCKET_URL"
+    "NEXT_PUBLIC_WEBSOCKET_URL",
+    "NEXT_PUBLIC_SECRET_CODE"
   ],
   "pipeline": {
     "build": {

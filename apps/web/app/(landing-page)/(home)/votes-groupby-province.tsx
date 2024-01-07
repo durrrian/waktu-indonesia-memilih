@@ -5,43 +5,64 @@ import { NO1_BAR_COLOR, NO2_BAR_COLOR, NO3_BAR_COLOR, makePercentage, namaKandid
 import cn from '@repo/tailwind-config/cn'
 import { Badge } from '@repo/web-ui/components'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-
-const data = [
-  {
-    name: 'DKI Jakarta',
-    no1: 4000,
-    no2: 2400,
-    no3: 2400,
-  },
-  {
-    name: 'Jabar',
-    no1: 3000,
-    no2: 1398,
-    no3: 2210,
-  },
-  {
-    name: 'Jatim',
-    no1: 2000,
-    no2: 9800,
-    no3: 2290,
-  },
-  {
-    name: 'Jateng',
-    no1: 2780,
-    no2: 3908,
-    no3: 2000,
-  },
-]
+import { Vote, Candidate, User } from '@prisma/client'
 
 interface Props {
-  no1: number
-  no2: number
-  no3: number
+  vote: (Vote & { candidate: Candidate } & { user: User })[]
 }
-
-export const VotesGroupbyProvince = ({ no1, no2, no3 }: Props) => {
+export const VotesGroupbyProvince = ({ vote }: Props) => {
   const { xs, sm, md } = useViewport()
   const isMobile = xs || sm || md
+
+  const onlyFourProvince = vote.filter(
+    (val) =>
+      val.user.provinsi === 'DKI_JAKARTA' ||
+      val.user.provinsi === 'JAWA_BARAT' ||
+      val.user.provinsi === 'BANTEN' ||
+      val.user.provinsi === 'JAWA_TENGAH',
+  )
+
+  const filterData: { provinsi: 'DKI Jakarta' | 'Jabar' | 'Banten' | 'Jateng'; nomorUrut: 1 | 2 | 3 }[] =
+    onlyFourProvince.map((val) => {
+      const provinsi = (() => {
+        if (val.user.provinsi === 'DKI_JAKARTA') return 'DKI Jakarta'
+        if (val.user.provinsi === 'JAWA_TENGAH') return 'Jateng'
+        if (val.user.provinsi === 'JAWA_BARAT') return 'Jabar'
+        if (val.user.provinsi === 'BANTEN') return 'Banten'
+
+        return 'DKI Jakarta'
+      })()
+
+      return {
+        provinsi,
+        nomorUrut: val.candidate.nomorUrut as 1 | 2 | 3,
+      }
+    })
+
+  const data = filterData.reduce(
+    (
+      acc: {
+        name: 'DKI Jakarta' | 'Jabar' | 'Banten' | 'Jateng'
+        no1: number
+        no2: number
+        no3: number
+        [key: string]: any
+      }[],
+      val,
+    ) => {
+      const index = acc.findIndex((item) => item.name === val.provinsi)
+      if (index !== -1) {
+        acc[index]['no' + val.nomorUrut]++
+      }
+      return acc
+    },
+    [
+      { name: 'DKI Jakarta', no1: 0, no2: 0, no3: 0 },
+      { name: 'Banten', no1: 0, no2: 0, no3: 0 },
+      { name: 'Jabar', no1: 0, no2: 0, no3: 0 },
+      { name: 'Jateng', no1: 0, no2: 0, no3: 0 },
+    ],
+  )
 
   const percentageData = makePercentage(data)
 

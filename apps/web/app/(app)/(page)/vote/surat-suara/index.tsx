@@ -2,7 +2,7 @@
 
 import { candidateParty } from '@/lib/candidate-party'
 import { Header } from './header'
-import { Candidate } from '@prisma/client'
+import { Candidate, User } from '@prisma/client'
 import { Card } from './card'
 import { useState } from 'react'
 import cn from '@repo/tailwind-config/cn'
@@ -10,12 +10,15 @@ import { Drawer, DrawerTrigger, DrawerContent, Button, ScrollArea, LoadingSpinne
 import { visiMisi } from './visi-misi'
 import { handleClick } from './handle-click'
 import { useServerAction } from '@/hooks/use-server-actions'
+import { useSocket } from '@/hooks/use-socket'
+import { SocketMessage } from '@/provider/socket-provider'
 
 interface Props {
   candidates: Candidate[]
+  user: User
 }
 
-export const SuratSuara = ({ candidates }: Props) => {
+export const SuratSuara = ({ candidates, user }: Props) => {
   const candidatesWithParty = candidates.map((candidate, index) => ({
     ...candidate,
     party: candidateParty[index].party,
@@ -24,6 +27,8 @@ export const SuratSuara = ({ candidates }: Props) => {
   const [isHover, setIsHover] = useState(false)
 
   const [runAction, isPending] = useServerAction(handleClick)
+
+  const { socket } = useSocket()
 
   return (
     <div
@@ -67,7 +72,18 @@ export const SuratSuara = ({ candidates }: Props) => {
                     className={cn('w-full text-xl mt-10')}
                     size='lg'
                     type='button'
-                    onClick={() => runAction(candidate.nomorUrut)}
+                    onClick={() => {
+                      runAction(candidate.nomorUrut)
+
+                      if (!socket) return
+
+                      socket.emit('send-vote', {
+                        provinsi: user.provinsi,
+                        rentanUsia: user.rentanUsia,
+                        nomorUrut: candidate.nomorUrut,
+                        vote: true,
+                      } as SocketMessage)
+                    }}
                     disabled={isPending}
                   >
                     {isPending && <LoadingSpinner className='mr-2' />} Pilih pasangan nomor urut {candidate.nomorUrut}
