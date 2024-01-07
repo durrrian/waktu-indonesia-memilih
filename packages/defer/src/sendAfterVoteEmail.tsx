@@ -4,7 +4,7 @@ import Email from '@repo/react-email/emails/after-vote'
 
 const resend = new Resend(process.env.RESEND_API_KEY!!)
 
-async function sendWelcomeEmail(email: string, name: string, nomorUrut: 1 | 2 | 3) {
+async function sendAfterVoteEMail(email: string, name: string, nomorUrut: 1 | 2 | 3) {
   return new Promise(async (resolve, reject) => {
     try {
       await resend.emails.send({
@@ -14,7 +14,7 @@ async function sendWelcomeEmail(email: string, name: string, nomorUrut: 1 | 2 | 
         react: <Email name={name} nomorUrut={nomorUrut} />,
       })
 
-      resolve('Successfully run sendWelcomeEmail function! Check logs.')
+      resolve('Successfully run sendAfterVoteEMail function! Check logs.')
     } catch (error) {
       console.error(JSON.stringify(error, null, 2))
       reject(error)
@@ -22,7 +22,7 @@ async function sendWelcomeEmail(email: string, name: string, nomorUrut: 1 | 2 | 
   })
 }
 
-export default defer(sendWelcomeEmail, {
+export default defer(sendAfterVoteEMail, {
   concurrency: 10,
   retry: 5,
 })
