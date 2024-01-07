@@ -1,7 +1,6 @@
 import { Logo } from '@/components/logo'
 import cn from '@repo/tailwind-config/cn'
 import { Card as CardComponent } from '@repo/web-ui/components'
-import { format } from 'date-fns'
 import Image from 'next/image'
 import { Vote, Candidate } from '@prisma/client'
 import { StaticImport } from 'next/dist/shared/lib/get-img-props'

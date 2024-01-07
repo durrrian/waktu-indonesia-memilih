@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs'
 import { db } from '@repo/database'
 import { currentUser as clerkCurrentUser } from '@clerk/nextjs'
 

@@ -1,6 +1,5 @@
 'use client'
 
-import useViewport from '@/hooks/use-viewport'
 import { NO1_BAR_COLOR, NO2_BAR_COLOR, NO3_BAR_COLOR, makePercentage, namaKandidat } from '@/lib/recharts'
 import cn from '@repo/tailwind-config/cn'
 import { Badge } from '@repo/web-ui/components'
@@ -15,9 +14,6 @@ interface Props {
 }
 
 export const VotesGroupbyProvince = ({ vote }: Props) => {
-  const { xs, sm, md } = useViewport()
-  const isMobile = xs || sm || md
-
   const filterData = vote.map((val) => {
     return {
       provinsi: val.user.provinsi ?? 'DKI_JAKARTA',
@@ -156,64 +152,5 @@ export const VotesGroupbyProvince = ({ vote }: Props) => {
         </BarChart>
       </ResponsiveContainer>
     </section>
-  )
-}
-
-const tickData = {
-  textAnchor: 'end',
-  verticalAnchor: 'middle',
-  orientation: 'left',
-  width: 60,
-  height: 1920,
-  x: 57,
-  y: 33.23529411764706,
-  className: 'recharts-yAxis yAxis',
-  stroke: 'none',
-  fill: '#666',
-  index: 0,
-  payload: {
-    coordinate: 33.23529411764706,
-    value: 'ACEH',
-    index: 0,
-    offset: 28.235294117647058,
-    tickCoord: 33.23529411764706,
-    isShow: true,
-  },
-  visibleTicksCount: 34,
-}
-
-const Titit = (props: any) => {
-  return (
-    <g className='recharts-layer recharts-cartesian-axis-tick'>
-      <line
-        orientation={props.orientation}
-        width={props.width}
-        height={props.height}
-        x='5'
-        y='5'
-        className='recharts-cartesian-axis-tick-line'
-        stroke='#666'
-        fill='none'
-        x1='59'
-        y1={props.payload.coordinate}
-        x2='65'
-        y2={props.payload.coordinate}
-      ></line>
-      <text
-        orientation={props.orientation}
-        width={props.width}
-        height={props.height}
-        stroke='none'
-        x='57'
-        y={props.payload.coordinate}
-        className='recharts-text recharts-cartesian-axis-tick-value'
-        text-anchor='end'
-        fill='#666'
-      >
-        <tspan x='57' dy='0.355em'>
-          ACEH
-        </tspan>
-      </text>
-    </g>
   )
 }

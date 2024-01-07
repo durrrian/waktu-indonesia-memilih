@@ -4,7 +4,7 @@ import { redirectToSignIn } from '@clerk/nextjs'
 import cn from '@repo/tailwind-config/cn'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button } from '@repo/web-ui/components'
 import Link from 'next/link'
-import { notFound, redirect } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 export default async function Page() {
   const user = await currentUser()

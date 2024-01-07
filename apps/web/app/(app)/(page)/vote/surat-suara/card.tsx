@@ -2,7 +2,7 @@
 
 import { Candidate } from '@prisma/client'
 import cn from '@repo/tailwind-config/cn'
-import { ForwardRefComponent, HTMLMotionProps, motion } from 'framer-motion'
+import { HTMLMotionProps, motion } from 'framer-motion'
 import Image from 'next/image'
 
 interface Props extends HTMLMotionProps<'button'> {

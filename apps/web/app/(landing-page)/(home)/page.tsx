@@ -1,4 +1,4 @@
-import { Button, Card, CardContent } from '@repo/web-ui/components'
+import { Button, Card } from '@repo/web-ui/components'
 import cn from '@repo/tailwind-config/cn'
 import { ToggleTheme } from '@/components/toggle-theme'
 import { CandidatesCard } from './candidates-card'

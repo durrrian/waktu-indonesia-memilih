@@ -14,7 +14,6 @@ import Autoplay from 'embla-carousel-autoplay'
 import { motion } from 'framer-motion'
 import cn from '@repo/tailwind-config/cn'
 import { Check, Download, Link } from 'lucide-react'
-import satori from 'satori'
 
 interface Props {
   vote: Vote & { candidate: Candidate }
