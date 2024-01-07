@@ -10,7 +10,7 @@ export const PemiluCountdown = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchResponse = await fetch('http://worldtimeapi.org/api/ip')
+      const fetchResponse = await fetch('https://worldtimeapi.org/api/ip')
       const data = await fetchResponse.json()
 
       const now = new Date(data.datetime)
