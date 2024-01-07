@@ -11,7 +11,8 @@
     "RESEND_API_KEY",
     "DEFER_TOKEN",
     "NEXT_PUBLIC_WEBSOCKET_URL",
-    "NEXT_PUBLIC_SECRET_CODE"
+    "NEXT_PUBLIC_SECRET_CODE",
+    "CLERK_WEBHOOK_SIGNING_SECRET"
   ],
   "pipeline": {
     "build": {
