@@ -3,7 +3,7 @@ import { SuratSuara } from './surat-suara'
 import { db } from '@repo/database'
 import { currentUser } from '@/lib/current-user'
 import { redirect } from 'next/navigation'
-import { Counter } from './counter'
+import { Counter } from '../counter'
 import { AfterVote } from './after-vote'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,8 +28,6 @@ export default async function Page() {
 
         return <AfterVote vote={vote} />
       })()}
-
-      <Counter />
     </div>
   )
 }

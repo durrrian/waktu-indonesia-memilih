@@ -7,5 +7,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  return <div>This is a page!</div>
+  return <div>Coming soon!</div>
 }

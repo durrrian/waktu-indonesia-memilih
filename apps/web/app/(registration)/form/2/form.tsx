@@ -10,6 +10,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  LoadingSpinner,
   Form as ReactForm,
   Select,
   SelectContent,
@@ -21,9 +22,10 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { onSubmit } from './on-submit'
 import { RentanUsia } from '@prisma/client'
-import { ArrowRight, Terminal } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Alert } from '../alert'
+import { useServerAction } from '@/hooks/use-server-actions'
 
 export const FormSchema = z.object({
   rentanUsia: z.string({ required_error: 'Wajib memilih rentang usia!' }),
@@ -47,11 +49,13 @@ export function Form() {
     })(),
   }))
 
+  const [handleSubmit, isPending] = useServerAction(onSubmit)
+
   return (
     <ReactForm {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          onSubmit(data)
+          handleSubmit(data)
 
           if (data.rentanUsia === 'UNDER_17') {
             router.push('/not-allowed')
@@ -93,7 +97,7 @@ export function Form() {
           className={cn('w-full')}
           disabled={form.formState.isSubmitting || form.formState.isLoading}
         >
-          Lanjut <ArrowRight className='ml-2 w-4 h-4' />
+          {isPending && <LoadingSpinner className='mr-2' />} Lanjut <ArrowRight className='ml-2 w-4 h-4' />
         </Button>
       </form>
 

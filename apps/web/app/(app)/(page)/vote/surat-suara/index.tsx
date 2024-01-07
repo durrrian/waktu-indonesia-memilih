@@ -27,7 +27,7 @@ export const SuratSuara = ({ candidates }: Props) => {
 
   return (
     <div
-      className={cn('md:p-8 p-4 bg-white grid gap-10', isHover ? 'cursor-coblos' : '')}
+      className={cn('md:p-8 p-4 bg-white grid gap-10 w-full', isHover ? 'cursor-coblos' : '')}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >

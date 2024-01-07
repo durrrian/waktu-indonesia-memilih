@@ -3,7 +3,7 @@ import { Terminal } from 'lucide-react'
 
 export const Alert = () => {
   return (
-    <AlertComponent>
+    <AlertComponent className='select-none'>
       <Terminal className='h-4 w-4' />
       <AlertTitle>Heads up!</AlertTitle>
       <AlertDescription>Kamu hanya bisa pilih sekali dan gabisa balik lagi!</AlertDescription>

@@ -1,5 +1,6 @@
-export default function parseUrl(endpoint: string) {
-  const host = process.env.NODE_ENV === 'production' ? 'https://waktuindonesiamemilih.id' : 'http://localhost:3000'
+export const BASE_URL =
+  process.env.NODE_ENV === 'production' ? 'https://waktuindonesiamemilih.id' : 'http://localhost:3000'
 
-  return new URL(endpoint, host)
+export default function parseUrl(endpoint: string) {
+  return new URL(endpoint, BASE_URL)
 }

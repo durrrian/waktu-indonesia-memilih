@@ -25,11 +25,12 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { onSubmit } from './on-submit'
 import { Provinsi } from '@prisma/client'
-import { ChevronsUpDown, ArrowRight, Terminal } from 'lucide-react'
+import { ChevronsUpDown, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { handleClickOtomatis } from './handle-click-otomatis'
 import { useRouter } from 'next/navigation'
 import { Alert } from '../alert'
+import { useServerAction } from '@/hooks/use-server-actions'
 
 export const FormSchema = z.object({
   provinsi: z.string({ required_error: 'Wajib memilih domisili provinsi!' }),
@@ -48,11 +49,13 @@ export function Form() {
 
   const [loadingGeoloc, setLoadingGeoloc] = useState(false)
 
+  const [handleSubmit, isPending] = useServerAction(onSubmit)
+
   return (
     <ReactForm {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          onSubmit(data)
+          handleSubmit(data)
           router.push('/form/2')
         })}
         className='w-full grid gap-20'
@@ -137,9 +140,9 @@ export function Form() {
         <Button
           type='submit'
           className={cn('w-full')}
-          disabled={loadingGeoloc || form.formState.isSubmitting || form.formState.isLoading}
+          disabled={loadingGeoloc || form.formState.isSubmitting || form.formState.isLoading || isPending}
         >
-          Lanjut <ArrowRight className='ml-2 w-4 h-4' />
+          {isPending && <LoadingSpinner className='mr-2' />} Lanjut <ArrowRight className='ml-2 w-4 h-4' />
         </Button>
       </form>
 
