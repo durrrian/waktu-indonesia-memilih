@@ -12,7 +12,7 @@ export const Logout = () => {
   return (
     <div className='flex items-center justify-center text-center flex-col gap-2'>
       <div className='flex items-center justify-center text-center flex-wrap gap-x-1 gap-y-0'>
-        <p>Kamu masuk degan akun:</p>
+        <p>Kamu masuk dengan akun:</p>
         {(() => {
           if (!user || !loaded || !user.primaryEmailAddress) {
             return <Skeleton className='bg-muted-foreground h-[10px] w-[150px]' />
