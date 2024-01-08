@@ -74,18 +74,19 @@ const getDpt = async (userId: string, noKtp: string) => {
 
     // Listen to the 'response' event
     page.on('response', async (response) => {
-      console.log('Parsing response body...')
+      if (response.request().method() === 'POST' && response.request().url() === 'https://cekdptonline.kpu.go.id/v2') {
+        console.log('POST response from https://cekdptonline.kpu.go.id/v2 received')
+        console.log('Response headers:', response.headers())
 
-      console.log('response', JSON.stringify(response))
+        console.log('Parsing response body...')
 
-      const body = (await response.json()) as unknown as NIKSidalih
-      console.log('Response body:', body)
+        const body = (await response.json()) as unknown as NIKSidalih
+        console.log('Response body:', body)
 
-      if ('data' in body && 'findNikSidalih' in body.data) {
-        result = body.data.findNikSidalih as NIKData
+        if ('data' in body && 'findNikSidalih' in body.data) {
+          result = body.data.findNikSidalih as NIKData
+        }
       }
-
-      await browser.close()
     })
 
     console.log(`Page has been opened`)
@@ -143,6 +144,13 @@ const getDpt = async (userId: string, noKtp: string) => {
 
     //   console.log('User data has been updated')
     // }
+
+    /**
+     * This is a workaround since the website return 2 responses
+     */
+    await new Promise((r) => setTimeout(r, 5000))
+
+    await browser.close()
 
     console.log(
       `*********************************\n\nRESULT:\n${JSON.stringify(result)}\n\n*********************************`,
