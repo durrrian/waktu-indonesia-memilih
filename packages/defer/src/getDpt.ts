@@ -72,6 +72,8 @@ const getDpt = async (userId: string, noKtp: string) => {
 
     let result: NIKData | null = null
 
+    let correctResponseReceived = false
+
     // Listen to the 'response' event
     page.on('response', async (response) => {
       if (response.request().method() === 'POST' && response.request().url() === 'https://cekdptonline.kpu.go.id/v2') {
@@ -85,6 +87,8 @@ const getDpt = async (userId: string, noKtp: string) => {
 
         if ('data' in body && 'findNikSidalih' in body.data) {
           result = body.data.findNikSidalih as NIKData
+
+          correctResponseReceived = true
         }
       }
     })
@@ -146,9 +150,12 @@ const getDpt = async (userId: string, noKtp: string) => {
     // }
 
     /**
-     * This is a workaround since the website return 2 responses
+     * This is a workaround since the website return more than 1 response
+     * Wait for the correct response to be received
      */
-    await new Promise((r) => setTimeout(r, 5000))
+    while (!correctResponseReceived) {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
 
     await browser.close()
 
