@@ -24,7 +24,7 @@ export const Header = () => {
     [
       { name: 'Vote', path: '/vote', icon: Vote },
       { name: 'Metrics', path: '/metrics', icon: BarChart },
-      { name: 'Daftar Pemilih Tetap', path: '/dpt', icon: FormInput },
+      // { name: 'Daftar Pemilih Tetap', path: '/dpt', icon: FormInput },
     ],
     [{ name: 'Edit Account', path: '/account', icon: User2 }],
   ]
