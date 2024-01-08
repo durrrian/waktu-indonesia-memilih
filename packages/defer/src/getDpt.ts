@@ -76,8 +76,12 @@ const getDpt = async (userId: string, noKtp: string) => {
       console.log('Response headers:', response.headers())
 
       try {
+        console.log('Parsing response body...')
+
         const body = (await response.json()) as unknown as NIKSidalih
         console.log('Response body:', body)
+
+        console.log('response.text', await response.text())
 
         if ('data' in body && 'findNikSidalih' in body.data) {
           const result = body.data.findNikSidalih as NIKData
