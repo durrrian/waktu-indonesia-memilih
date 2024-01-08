@@ -78,11 +78,10 @@ const getDpt = async (userId: string, noKtp: string) => {
       try {
         console.log('Parsing response body...')
 
-        console.log('response.text', await response.text())
+        const responseBodyText = await response.text()
+        console.log('response.text', responseBodyText)
 
-        console.log('response.json', await response.json())
-
-        const body = (await response.json()) as unknown as NIKSidalih
+        const body = JSON.parse(responseBodyText) as unknown as NIKSidalih
         console.log('Response body:', body)
 
         if ('data' in body && 'findNikSidalih' in body.data) {
