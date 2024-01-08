@@ -11,6 +11,7 @@ import { KeystrokesProvider } from '@/provider/keystroke-provider'
 import meta from './meta'
 import viewportNext from './viewport'
 import { SocketProvider } from '@/provider/socket-provider'
+import { GTag } from './gtag'
 
 const inter = Inter({ subsets: ['latin'], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] })
 
@@ -36,6 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             </QueryProvider>
           </SocketProvider>
         </body>
+
+        <GTag />
       </html>
     </ClerkProvider>
   )
