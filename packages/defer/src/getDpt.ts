@@ -45,123 +45,128 @@ export type NIKSidalih = {
 }
 
 const getDpt = async (userId: string, noKtp: string) => {
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: 'new' })
+  return new Promise(async (resolve, _) => {
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: 'new' })
 
-  console.log(`Browser opened with version ${await browser.version()}`)
+    console.log(`Browser opened with version ${await browser.version()}`)
 
-  const page = await browser.newPage()
+    const page = await browser.newPage()
 
-  await page.setUserAgent(
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537',
-  )
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537',
+    )
 
-  console.log('User agent has been set')
+    console.log('User agent has been set')
 
-  // Listen to the 'request' event
-  page.on('request', (request) => {
-    if (request.method() === 'POST' && request.url() === 'https://cekdptonline.kpu.go.id/v2') {
-      console.log('POST request to https://cekdptonline.kpu.go.id/v2 detected')
-      console.log('Request headers:', request.headers())
+    // Listen to the 'request' event
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && request.url() === 'https://cekdptonline.kpu.go.id/v2') {
+        console.log('POST request to https://cekdptonline.kpu.go.id/v2 detected')
+        console.log('Request headers:', request.headers())
 
-      const body = request.postData()
+        const body = request.postData()
 
-      console.log('Request body:', body)
-    }
-  })
-
-  // Listen to the 'response' event
-  page.on('response', async (response) => {
-    if (response.request().method() === 'POST' && response.request().url() === 'https://cekdptonline.kpu.go.id/v2') {
-      console.log('POST response from https://cekdptonline.kpu.go.id/v2 received')
-      console.log('Response headers:', response.headers())
-
-      try {
-        console.log('Parsing response body...')
-
-        const responseBodyText = await response.text()
-        console.log('response.text', responseBodyText)
-
-        const body = JSON.parse(responseBodyText) as unknown as NIKSidalih
-        console.log('Response body:', body)
-
-        if ('data' in body && 'findNikSidalih' in body.data) {
-          const result = body.data.findNikSidalih as NIKData
-
-          console.log(
-            `*********************************\n\nRESULT:\n${JSON.stringify(
-              result,
-            )}\n\n*********************************`,
-          )
-        } else {
-          console.log(
-            `*********************************\n\nRESULT:\n${JSON.stringify(
-              null,
-            )}\n\n*********************************`,
-          )
-        }
-      } catch (error) {
-        console.error('Failed to parse response body:', error)
-      } finally {
-        await browser.close()
+        console.log('Request body:', body)
       }
+    })
+
+    let result: NIKData | null = null
+
+    // Listen to the 'response' event
+    page.on('response', async (response) => {
+      if (response.request().method() === 'POST' && response.request().url() === 'https://cekdptonline.kpu.go.id/v2') {
+        console.log('POST response from https://cekdptonline.kpu.go.id/v2 received')
+        console.log('Response headers:', response.headers())
+
+        try {
+          console.log('Parsing response body...')
+
+          console.log('response', JSON.stringify(response))
+
+          const body = (await response.json()) as unknown as NIKSidalih
+          console.log('Response body:', body)
+
+          if ('data' in body && 'findNikSidalih' in body.data) {
+            result = body.data.findNikSidalih as NIKData
+
+            console.log(
+              `*********************************\n\nRESULT:\n${JSON.stringify(
+                result,
+              )}\n\n*********************************`,
+            )
+          } else {
+            console.log(
+              `*********************************\n\nRESULT:\n${JSON.stringify(
+                null,
+              )}\n\n*********************************`,
+            )
+          }
+        } catch (error) {
+          console.error('Failed to parse response body:', error)
+        } finally {
+          await browser.close()
+        }
+      }
+    })
+
+    console.log(`Page has been opened`)
+
+    const puppeteerTimeout = 1000 * 1000 // 1000 seconds
+
+    // Increase the timeout to 10 seconds
+    page.setDefaultNavigationTimeout(puppeteerTimeout)
+    page.setDefaultTimeout(puppeteerTimeout)
+
+    console.log(`Timeout has been set to ${puppeteerTimeout}`)
+
+    // pass the following `waitUntil` option to avoid
+    //   unnecessary blocking when loading a page
+    await page.goto('https://cekdptonline.kpu.go.id/', { waitUntil: 'networkidle0' })
+
+    console.log(`Page has been loaded`)
+
+    // Find the input field
+    const inputField = await page.$('input#__BVID__19')
+
+    if (inputField) {
+      console.log(`Input field has been found`)
+
+      // Type into the input field
+      await inputField.type(noKtp)
+
+      console.log(`Input field has been filled`)
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
+
+    const [button] = await page.$x("//button[contains(., 'Pencarian')]")
+
+    if (button) {
+      console.log(`Button has been found`)
+
+      // Click the button
+      await (button as ElementHandle<Element>).click()
+      console.log(`Button has been clicked`)
+    }
+
+    await page.waitForRequest((request) => request.url() === 'https://cekdptonline.kpu.go.id/v2')
+
+    await page.waitForResponse((response) => response.url() === 'https://cekdptonline.kpu.go.id/v2')
+
+    // if (result !== null) {
+    //   console.log('Result is null, continuing to update user data')
+
+    //   const response = await db.user.update({ where: { id: userId }, data: { nik: noKtp } })
+
+    //   const { lhp, ...rest } = result as NIKData
+
+    //   await db.dpt.create({ data: { userId: response.id, ...rest } })
+
+    //   console.log('User data has been updated')
+    // }
+
+    resolve(result)
   })
-
-  console.log(`Page has been opened`)
-
-  const puppeteerTimeout = 1000 * 1000 // 1000 seconds
-
-  // Increase the timeout to 10 seconds
-  page.setDefaultNavigationTimeout(puppeteerTimeout)
-  page.setDefaultTimeout(puppeteerTimeout)
-
-  console.log(`Timeout has been set to ${puppeteerTimeout}`)
-
-  // pass the following `waitUntil` option to avoid
-  //   unnecessary blocking when loading a page
-  await page.goto('https://cekdptonline.kpu.go.id/', { waitUntil: 'networkidle0' })
-
-  console.log(`Page has been loaded`)
-
-  // Find the input field
-  const inputField = await page.$('input#__BVID__19')
-
-  if (inputField) {
-    console.log(`Input field has been found`)
-
-    // Type into the input field
-    await inputField.type(noKtp)
-
-    console.log(`Input field has been filled`)
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-  }
-
-  const [button] = await page.$x("//button[contains(., 'Pencarian')]")
-
-  if (button) {
-    console.log(`Button has been found`)
-
-    // Click the button
-    await (button as ElementHandle<Element>).click()
-    console.log(`Button has been clicked`)
-  }
-
-  await page.waitForRequest((request) => request.url() === 'https://cekdptonline.kpu.go.id/v2')
-
-  await page.waitForResponse((response) => response.url() === 'https://cekdptonline.kpu.go.id/v2')
-
-  // if (result !== null) {
-  //   console.log('Result is null, continuing to update user data')
-
-  //   const response = await db.user.update({ where: { id: userId }, data: { nik: noKtp } })
-
-  //   const { lhp, ...rest } = result as NIKData
-
-  //   await db.dpt.create({ data: { userId: response.id, ...rest } })
-
-  //   console.log('User data has been updated')
-  // }
 }
 
 export default defer(getDpt, {
