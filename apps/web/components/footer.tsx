@@ -6,7 +6,9 @@ import { usePathname } from 'next/navigation'
 export const Footer = () => {
   const pathname = usePathname()
 
-  if (pathname === '/kebijakan-privasi') return null
+  const disabled = ['/kebijakan-privasi', '/terms-of-service']
+
+  if (disabled.includes(pathname)) return null
 
   return (
     <footer className='w-full bg-gradient-to-br from-[#A22085] to-[#600F97] py-10 mt-20 md:px-2 px-4 text-white'>
@@ -28,6 +30,19 @@ export const Footer = () => {
           </Link>{' '}
           kita yaa!
         </p>
+
+        <section className='flex items-center justify-between gap-x-4 flex-wrap'>
+          <section className='flex items-center justify-center w-fit h-fit flex-wrap gap-x-2'>
+            <Link href='/kebijakan-privasi' className='underline' target='_blank'>
+              Kebijakan Privasi
+            </Link>
+            <Link href='/terms-of-service' className='underline' target='_blank'>
+              Terms of Service
+            </Link>
+          </section>
+
+          <p>Durrrian {new Date().getFullYear()}</p>
+        </section>
       </section>
     </footer>
   )

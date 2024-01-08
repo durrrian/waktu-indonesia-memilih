@@ -4,7 +4,7 @@ import parseUrl from '@/lib/parse-url'
 import { db } from '@repo/database'
 
 export default authMiddleware({
-  publicRoutes: ['/login(.*)', '/', '/kebijakan-privasi', '/form(.*)', '/not-allowed'],
+  publicRoutes: ['/login(.*)', '/', '/kebijakan-privasi', '/terms-of-service', '/form(.*)', '/not-allowed'],
 
   async afterAuth(auth, req) {
     if (!auth.userId && !auth.isPublicRoute) {

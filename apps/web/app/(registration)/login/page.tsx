@@ -51,6 +51,10 @@ export default async function Page({ searchParams }: Props) {
           <Link href={'/kebijakan-privasi'} className='hover:text-primary' prefetch={true} target='_blank'>
             Kebijakan Privasi
           </Link>{' '}
+          dan{' '}
+          <Link href={'/terms-of-service'} className='hover:text-primary' prefetch={true} target='_blank'>
+            Terms of Service
+          </Link>{' '}
           Waktu Indonesia Memilih.
         </p>
       </CardFooter>
