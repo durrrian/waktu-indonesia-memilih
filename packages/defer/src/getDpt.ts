@@ -74,39 +74,18 @@ const getDpt = async (userId: string, noKtp: string) => {
 
     // Listen to the 'response' event
     page.on('response', async (response) => {
-      if (response.request().method() === 'POST' && response.request().url() === 'https://cekdptonline.kpu.go.id/v2') {
-        console.log('POST response from https://cekdptonline.kpu.go.id/v2 received')
-        // console.log('Response headers:', response.headers())
+      console.log('Parsing response body...')
 
-        try {
-          console.log('Parsing response body...')
+      console.log('response', JSON.stringify(response))
 
-          console.log('response', JSON.stringify(response))
+      const body = (await response.json()) as unknown as NIKSidalih
+      console.log('Response body:', body)
 
-          const body = (await response.json()) as unknown as NIKSidalih
-          console.log('Response body:', body)
-
-          if ('data' in body && 'findNikSidalih' in body.data) {
-            result = body.data.findNikSidalih as NIKData
-
-            console.log(
-              `*********************************\n\nRESULT:\n${JSON.stringify(
-                result,
-              )}\n\n*********************************`,
-            )
-          } else {
-            console.log(
-              `*********************************\n\nRESULT:\n${JSON.stringify(
-                null,
-              )}\n\n*********************************`,
-            )
-          }
-        } catch (error) {
-          console.error('Failed to parse response body:', error)
-        } finally {
-          await browser.close()
-        }
+      if ('data' in body && 'findNikSidalih' in body.data) {
+        result = body.data.findNikSidalih as NIKData
       }
+
+      await browser.close()
     })
 
     console.log(`Page has been opened`)
@@ -164,6 +143,10 @@ const getDpt = async (userId: string, noKtp: string) => {
 
     //   console.log('User data has been updated')
     // }
+
+    console.log(
+      `*********************************\n\nRESULT:\n${JSON.stringify(result)}\n\n*********************************`,
+    )
 
     resolve(result)
   })
