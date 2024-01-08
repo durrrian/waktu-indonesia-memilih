@@ -5,8 +5,8 @@ interface Props {
   nomorUrut: 1 | 2 | 3
 }
 
-const baseUrl = 'http://localhost:3000'
-// const baseUrl = 'https://waktuindonesiamemilih.id'
+// const baseUrl = 'http://localhost:3000'
+const baseUrl = 'https://waktuindonesiamemilih.id'
 
 const Email = ({ name = 'Furqon Wilogo', nomorUrut = 1 }: Props) => {
   const previewText = `Siapanih yang baru pilih nomor urut ${nomorUrut}🥳`

@@ -15,12 +15,13 @@ model User {
   clerkUserId     String          @unique
   email           String          @unique
   name            String
+  nik             String?
   photoUrl        String?
   createdAt       DateTime        @default(now())
   rentanUsia      RentanUsia?
   provinsi        Provinsi?
   vote            Vote?
-
+  dpt             Dpt?
 }
 
 enum RentanUsia {
@@ -84,5 +85,24 @@ model Vote {
   userId          String          @unique @db.ObjectId
   candidate       Candidate       @relation(fields: [candidateId], references: [id])
   candidateId     String          @db.ObjectId
+  createdAt       DateTime        @default(now())
+}
+
+model Dpt {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  nama            String?
+  nik             String?
+  nkk             String?
+  provinsi        String?
+  kabupaten       String?
+  kecamatan       String?
+  kelurahan       String?
+  tps             String?
+  alamat          String?
+  lat             String?
+  lon             String?
+  metode          String?
+  user            User            @relation(fields: [userId], references: [id])
+  userId          String          @unique @db.ObjectId
   createdAt       DateTime        @default(now())
 }
