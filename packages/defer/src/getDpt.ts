@@ -75,26 +75,31 @@ const getDpt = async (userId: string, noKtp: string) => {
       console.log('POST response from https://cekdptonline.kpu.go.id/v2 received')
       console.log('Response headers:', response.headers())
 
-      const body = (await response.json()) as unknown as NIKSidalih
+      try {
+        const body = (await response.json()) as unknown as NIKSidalih
+        console.log('Response body:', body)
 
-      console.log('Response body:', body)
+        if ('data' in body && 'findNikSidalih' in body.data) {
+          const result = body.data.findNikSidalih as NIKData
 
-      if ('data' in body && 'findNikSidalih' in body.data) {
-        const result = body.data.findNikSidalih as NIKData
+          console.log(
+            `*********************************\n\nRESULT:\n${JSON.stringify(
+              result,
+            )}\n\n*********************************`,
+          )
 
-        console.log(
-          `*********************************\n\nRESULT:\n${JSON.stringify(
-            result,
-          )}\n\n*********************************`,
-        )
+          await browser.close()
+        } else {
+          console.log(
+            `*********************************\n\nRESULT:\n${JSON.stringify(
+              null,
+            )}\n\n*********************************`,
+          )
 
-        await browser.close()
-      } else {
-        console.log(
-          `*********************************\n\nRESULT:\n${JSON.stringify(null)}\n\n*********************************`,
-        )
-
-        await browser.close()
+          await browser.close()
+        }
+      } catch (error) {
+        console.error('Failed to parse response body:', error)
       }
     }
   })
