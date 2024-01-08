@@ -128,17 +128,21 @@ const getDpt = async (userId: string, noKtp: string) => {
 
   await browser.close()
 
-  if (result !== null) {
-    console.log('Result is null, continuing to update user data')
+  console.log(
+    `*********************************\n\nRESULT:\n${JSON.stringify(result)}\n\n*********************************`,
+  )
 
-    const response = await db.user.update({ where: { id: userId }, data: { nik: noKtp } })
+  // if (result !== null) {
+  //   console.log('Result is null, continuing to update user data')
 
-    const { lhp, ...rest } = result as NIKData
+  //   const response = await db.user.update({ where: { id: userId }, data: { nik: noKtp } })
 
-    await db.dpt.create({ data: { userId: response.id, ...rest } })
+  //   const { lhp, ...rest } = result as NIKData
 
-    console.log('User data has been updated')
-  }
+  //   await db.dpt.create({ data: { userId: response.id, ...rest } })
+
+  //   console.log('User data has been updated')
+  // }
 }
 
 export default defer(getDpt, {
