@@ -45,7 +45,7 @@ export type NIKSidalih = {
 }
 
 const getDpt = async (userId: string, noKtp: string) => {
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: true })
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: false })
 
   console.log(`Browser opened with version ${await browser.version()}`)
 
