@@ -76,7 +76,7 @@ const getDpt = async (userId: string, noKtp: string) => {
     page.on('response', async (response) => {
       if (response.request().method() === 'POST' && response.request().url() === 'https://cekdptonline.kpu.go.id/v2') {
         console.log('POST response from https://cekdptonline.kpu.go.id/v2 received')
-        console.log('Response headers:', response.headers())
+        // console.log('Response headers:', response.headers())
 
         try {
           console.log('Parsing response body...')
