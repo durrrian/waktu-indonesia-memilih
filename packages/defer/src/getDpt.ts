@@ -87,19 +87,17 @@ const getDpt = async (userId: string, noKtp: string) => {
               result,
             )}\n\n*********************************`,
           )
-
-          await browser.close()
         } else {
           console.log(
             `*********************************\n\nRESULT:\n${JSON.stringify(
               null,
             )}\n\n*********************************`,
           )
-
-          await browser.close()
         }
       } catch (error) {
         console.error('Failed to parse response body:', error)
+      } finally {
+        await browser.close()
       }
     }
   })
