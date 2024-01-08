@@ -78,12 +78,14 @@ const getDpt = async (userId: string, noKtp: string) => {
       }
 
       console.log('Response body:', body)
+
+      await browser.close()
     }
   })
 
   console.log(`Page has been opened`)
 
-  const puppeteerTimeout = 1000 * 100 // 100 seconds
+  const puppeteerTimeout = 1000 * 1000 // 1000 seconds
 
   // Increase the timeout to 10 seconds
   page.setDefaultNavigationTimeout(puppeteerTimeout)
@@ -122,11 +124,6 @@ const getDpt = async (userId: string, noKtp: string) => {
   await page.waitForRequest((request) => request.url() === 'https://cekdptonline.kpu.go.id/v2')
 
   await page.waitForResponse((response) => response.url() === 'https://cekdptonline.kpu.go.id/v2')
-
-  // Add a delay before closing the browser
-  await new Promise((resolve) => setTimeout(resolve, 100))
-
-  await browser.close()
 
   console.log(
     `*********************************\n\nRESULT:\n${JSON.stringify(result)}\n\n*********************************`,
