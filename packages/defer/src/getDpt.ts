@@ -74,6 +74,8 @@ const getDpt = async (userId: string, noKtp: string) => {
 
     let correctResponseReceived = false
 
+    let responseCount = 0
+
     // Listen to the 'response' event
     page.on('response', async (response) => {
       if (response.request().method() === 'POST' && response.request().url() === 'https://cekdptonline.kpu.go.id/v2') {
@@ -86,9 +88,19 @@ const getDpt = async (userId: string, noKtp: string) => {
         console.log('Response body:', body)
 
         if ('data' in body && 'findNikSidalih' in body.data) {
-          result = body.data.findNikSidalih as NIKData
+          const bodyData = body.data.findNikSidalih as NIKData | null
 
-          correctResponseReceived = true
+          if (bodyData !== null) {
+            result = bodyData
+            correctResponseReceived = true
+          }
+        }
+
+        responseCount += 1
+
+        // Close the browser if the correct response is received or if the response count reaches 5
+        if (correctResponseReceived || responseCount >= 5) {
+          await browser.close()
         }
       }
     })
@@ -148,16 +160,6 @@ const getDpt = async (userId: string, noKtp: string) => {
 
     //   console.log('User data has been updated')
     // }
-
-    /**
-     * This is a workaround since the website return more than 1 response
-     * Wait for the correct response to be received
-     */
-    while (!correctResponseReceived) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    }
-
-    await browser.close()
 
     console.log(
       `*********************************\n\nRESULT:\n${JSON.stringify(result)}\n\n*********************************`,
