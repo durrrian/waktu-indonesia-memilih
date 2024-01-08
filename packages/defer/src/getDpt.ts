@@ -51,7 +51,11 @@ const getDpt = async (userId: string, noKtp: string) => {
 
   const page = await browser.newPage()
 
-  let result: NIKData | null = null
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537',
+  )
+
+  console.log('User agent has been set')
 
   // Listen to the 'request' event
   page.on('request', (request) => {
@@ -73,13 +77,25 @@ const getDpt = async (userId: string, noKtp: string) => {
 
       const body = (await response.json()) as unknown as NIKSidalih
 
-      if ('data' in body && 'findNikSidalih' in body.data) {
-        result = body.data.findNikSidalih
-      }
-
       console.log('Response body:', body)
 
-      await browser.close()
+      if ('data' in body && 'findNikSidalih' in body.data) {
+        const result = body.data.findNikSidalih as NIKData
+
+        console.log(
+          `*********************************\n\nRESULT:\n${JSON.stringify(
+            result,
+          )}\n\n*********************************`,
+        )
+
+        await browser.close()
+      } else {
+        console.log(
+          `*********************************\n\nRESULT:\n${JSON.stringify(null)}\n\n*********************************`,
+        )
+
+        await browser.close()
+      }
     }
   })
 
@@ -109,6 +125,8 @@ const getDpt = async (userId: string, noKtp: string) => {
     await inputField.type(noKtp)
 
     console.log(`Input field has been filled`)
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   }
 
   const [button] = await page.$x("//button[contains(., 'Pencarian')]")
@@ -124,10 +142,6 @@ const getDpt = async (userId: string, noKtp: string) => {
   await page.waitForRequest((request) => request.url() === 'https://cekdptonline.kpu.go.id/v2')
 
   await page.waitForResponse((response) => response.url() === 'https://cekdptonline.kpu.go.id/v2')
-
-  console.log(
-    `*********************************\n\nRESULT:\n${JSON.stringify(result)}\n\n*********************************`,
-  )
 
   // if (result !== null) {
   //   console.log('Result is null, continuing to update user data')
