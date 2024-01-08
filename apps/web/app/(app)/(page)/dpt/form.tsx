@@ -42,7 +42,7 @@ export function Form() {
     <ReactForm {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          console.log(data)
+          handleSubmit(data)
         })}
         className='w-full grid gap-8 my-16'
       >
