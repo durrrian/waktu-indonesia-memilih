@@ -34,8 +34,8 @@ export default async function Page() {
         <section className='flex items-center justify-end flex-col bg-background rounded-lg shadow-sm p-6 border border-border'>
           <h2 className='text-justify text-lg'>
             <span className='text-primary'>Waktu Indonesia Memilih</span> adalah online tools untuk voting calon
-            presiden dan wakil presiden 2024. Seluruh hasil voting akan ter-update secara real-time untuk menjadi
-            benchmark masing-masing kandidat.
+            presiden dan wakil presiden 2024. Kami harap bisa mewakili voting rakyat secara independen. Seluruh hasil
+            voting akan ter-update secara real-time untuk menjadi benchmark masing-masing kandidat.
           </h2>
         </section>
 

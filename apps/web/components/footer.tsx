@@ -18,8 +18,7 @@ export const Footer = () => {
           <Link href='https://durrrian.com' target='_blank' className='underline'>
             Durrrian
           </Link>
-          , software agency dari DKI Jakarta. Kami harap bisa mewakili voting rakyat secara independen. Project software
-          juga lagi pada selesai jadi kami ada waktu 😁.
+          , software agency dari DKI Jakarta. Kami harap bisa mewakili voting rakyat secara independen.
         </p>
 
         <p>

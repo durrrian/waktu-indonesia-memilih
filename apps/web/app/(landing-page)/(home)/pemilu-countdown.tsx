@@ -101,8 +101,8 @@ export const PemiluCountdown = () => {
           <Link href={'https://bijakmemilih.id'} target='_blank' className='underline'>
             bijakmemilih.id
           </Link>
-          . Btw, kalo dari tim bijak memilih melihat website ini, kita sampe mikirin kalo user gonta ganti kalendar masa
-          keganti? Hire kita yaa haha.
+          . Kalau tim web-dev Bijak Memilih melihat website ini, countdown ini kami buat sehingga tidak akan berubah
+          walaupun user mengganti kalendar di device mereka.
         </small>
       </div>
     </section>
