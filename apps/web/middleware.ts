@@ -12,6 +12,7 @@ export default authMiddleware({
     '/form(.*)',
     '/not-allowed',
     '/api/webhook/clerk',
+    '/api/og(.*)',
   ],
 
   async afterAuth(auth, req) {
