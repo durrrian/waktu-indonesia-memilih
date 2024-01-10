@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ImageResponse } from 'next/og'
 import { db } from '@repo/database'
-import { WIMProfile } from '../wim-profile'
-import { No1 } from '../no-1'
-import { No2 } from '../no-2'
-import { No3 } from '../no-3'
-import { LogoWIM } from '../logo-wim'
+import { LogoWIM, No1, No2, No3, WIMProfile } from './components'
 
 export const runtime = 'edge'
-
-export const revalidate = false
 
 export async function GET(request: NextRequest, context: { params: { userId: string } }) {
   const userId = context.params.userId
