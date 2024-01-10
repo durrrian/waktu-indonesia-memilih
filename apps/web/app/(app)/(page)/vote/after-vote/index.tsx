@@ -130,12 +130,27 @@ export const AfterVote = ({ vote, user }: Props) => {
                 // Set a timeout to update the message after 5 seconds
                 const timer = setTimeout(() => {
                   setMessage('Mohon maaf yaa lama downloadnya...')
-                }, 5000)
+                }, 10000)
 
-                // Set a timeout to update the message after 5 seconds
                 const anotherTimer = setTimeout(() => {
                   setMessage('Bentar lagi kok...')
-                }, 10000)
+                }, 20000)
+
+                const anotherOtherTimer = setTimeout(() => {
+                  setMessage('Sumpah bentar lagi...')
+                }, 30000)
+
+                const anotherOtherOtherTimer = setTimeout(() => {
+                  setMessage('Kok lama yak?????')
+                }, 40000)
+
+                const anotherOtherOtherOtherTimer = setTimeout(() => {
+                  setMessage('Sumpaaaah lama banget wkwkwk maaf yak')
+                }, 50000)
+
+                const anotherOtherOtherOtherOtherTimer = setTimeout(() => {
+                  setMessage('Sabar yaaaaa aku yakin kamu bisa')
+                }, 60000)
 
                 const response = await fetch(
                   `/api/download-image/${user.id}?showImage=${current === 1 ? 'false' : 'true'}`,
@@ -155,6 +170,10 @@ export const AfterVote = ({ vote, user }: Props) => {
                 // Clear the timeout if the download finishes before 5 seconds
                 clearTimeout(timer)
                 clearTimeout(anotherTimer)
+                clearTimeout(anotherOtherTimer)
+                clearTimeout(anotherOtherOtherTimer)
+                clearTimeout(anotherOtherOtherOtherTimer)
+                clearTimeout(anotherOtherOtherOtherOtherTimer)
 
                 // Clear the message when the download finishes
                 setMessage(null)
