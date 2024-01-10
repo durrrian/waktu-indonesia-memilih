@@ -1,10 +1,6 @@
 import { ImageResponse } from 'next/og'
-import { LogoWIM } from './logo-wim'
-import { LogoWIMPutih } from './logo-wim-putih'
-import { No1 } from './no-1'
-import { No2 } from './no-2'
-import { No3 } from './no-3'
 import { db } from '@repo/database'
+import { LogoWIM, LogoWIMPutih, No1, No2, No3 } from './og-components'
 
 export const runtime = 'edge'
 
