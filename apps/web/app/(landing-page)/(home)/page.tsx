@@ -37,7 +37,7 @@ export async function generateMetadata(
     return {
       title: 'Kamu diundang untuk vote di Waktu Indonesia Memilih',
       openGraph: {
-        images: [parseUrl(`/api/og?ref=${encodeURIComponent(ref)}&showImage=${showImage}`).href, ...previousImages],
+        images: [parseUrl(`/api/og?ref=${encodeURIComponent(ref)}&showImage=${showImage}`).href],
       },
     }
   }
