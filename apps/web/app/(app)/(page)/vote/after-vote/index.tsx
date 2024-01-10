@@ -29,7 +29,7 @@ export const AfterVote = ({ vote, user }: Props) => {
 
   const [loading, setLoading] = useState(false)
 
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     if (!api) {
@@ -132,15 +132,14 @@ export const AfterVote = ({ vote, user }: Props) => {
                   setMessage('Mohon maaf yaa lama downloadnya...')
                 }, 5000)
 
+                // Set a timeout to update the message after 5 seconds
+                const anotherTimer = setTimeout(() => {
+                  setMessage('Bentar lagi kok...')
+                }, 10000)
+
                 const response = await fetch(
                   `/api/download-image/${user.id}?showImage=${current === 1 ? 'false' : 'true'}`,
                 )
-
-                // Clear the timeout if the download finishes before 5 seconds
-                clearTimeout(timer)
-
-                // Clear the message when the download finishes
-                setMessage('')
 
                 const blob = await response.blob()
                 const url = window.URL.createObjectURL(blob)
@@ -153,12 +152,21 @@ export const AfterVote = ({ vote, user }: Props) => {
                 window.URL.revokeObjectURL(url)
                 document.body.removeChild(a)
 
+                // Clear the timeout if the download finishes before 5 seconds
+                clearTimeout(timer)
+                clearTimeout(anotherTimer)
+
+                // Clear the message when the download finishes
+                setMessage(null)
+
                 setLoading(false)
               }}
               disabled={loading}
             >
               {loading && <LoadingSpinner className='mr-2' />}
-              {message ?? (
+              {message ? (
+                <>{message}</>
+              ) : (
                 <>
                   Download gambar <Download className='w-4 h-4 ml-2' />
                 </>
