@@ -9,7 +9,10 @@ interface Props {
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Kamu diundang untuk vote di Waktu Indonesia Memilih',
+    openGraph: {
+      title: 'Kamu diundang untuk vote di Waktu Indonesia Memilih',
+      description: 'Hi, kamu diundang untuk vote di Waktu Indonesia Memilih loh! Yuk, vote sekarang!',
+    },
   }
 }
 
