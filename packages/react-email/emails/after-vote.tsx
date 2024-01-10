@@ -1,4 +1,4 @@
-import { Body, Container, Head, Html, Preview, Tailwind, Text, Img } from '@react-email/components'
+import { Body, Container, Head, Html, Preview, Tailwind, Text, Img, Link, Hr } from '@react-email/components'
 
 interface Props {
   name: string
@@ -9,7 +9,7 @@ interface Props {
 const baseUrl = 'https://waktuindonesiamemilih.id'
 
 const Email = ({ name = 'Furqon Wilogo', nomorUrut = 1 }: Props) => {
-  const previewText = `Siapanih yang baru pilih nomor urut ${nomorUrut}🥳`
+  const previewText = `Pilihanmu adalah nomor urut ${nomorUrut}🥳`
 
   return (
     <Html>
@@ -18,11 +18,27 @@ const Email = ({ name = 'Furqon Wilogo', nomorUrut = 1 }: Props) => {
       <Tailwind>
         <Body className='bg-white my-auto mx-auto font-sans'>
           <Container className='border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]'>
-            <Text className='text-black text-[14px] leading-[24px]'>Hi, {name}!</Text>
+            <Text className='text-black text-[14px] leading-[24px]'>
+              <b className='font-semibold'>Hi, {name}!</b>
+            </Text>
 
-            <Text className='text-black text-[14px] leading-[24px]'>Terimakasih sudah nge-vote!</Text>
+            <Text className='text-black text-[14px] leading-[24px]'>Terimakasih sudah nge-vote 😉</Text>
 
-            <Text className='text-black text-[14px] leading-[24px]'>Semoga Indonesia makin maju!</Text>
+            <Text className='text-black text-[14px] leading-[24px]'>
+              Kamu bisa pantau posisi pilihanmu di laman{' '}
+              <Link className='underline text-blue-500' href='https://waktuindonesiamemilih.id/metrics'>
+                Metrics
+              </Link>
+            </Text>
+
+            <Text>
+              <b className='font-semibold text-[14px] leading-[24px]'>
+                {' '}
+                Kalau kamu suka sama WIM, jangan lupa ajak teman-teman kamu voting juga ya! 😉
+              </b>
+            </Text>
+
+            <Hr />
 
             <Container className='relative w-[350px]'>
               <svg

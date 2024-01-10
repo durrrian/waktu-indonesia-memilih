@@ -47,7 +47,7 @@ export default async function Page() {
 
       <CardContent className={cn('flex flex-col items-center justify-center gap-8')}>
         <p className='text-justify'>
-          Supaya hasil voting ini tetap objectif, yang bisa voting hanya warna Indonesia yang sudah mempunyai hak suara.
+          Supaya hasil voting ini tetap objectif, yang bisa voting hanya warga Indonesia yang sudah mempunyai hak suara.
           Kalau kamu suka sama WIM, kamu bisa kasih tau ke temen dan keluarga kamu yang sudah punya hak suara 😉
         </p>
 
