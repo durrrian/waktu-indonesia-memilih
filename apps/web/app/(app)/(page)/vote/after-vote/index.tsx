@@ -153,13 +153,9 @@ export const AfterVote = ({ vote, user }: Props) => {
               size='sm'
               onClick={async () => {
                 if (current === 1) {
-                  await copyLink(
-                    `https://waktuindonesiamemilih.id?ref=${encodeURIComponent(user.email)}&showImage=false`,
-                  )
+                  await copyLink(`https://waktuindonesiamemilih.id/invite/${encodeURIComponent(user.email)}/false`)
                 } else {
-                  await copyLink(
-                    `https://waktuindonesiamemilih.id?ref=${encodeURIComponent(user.email)}&showImage=true`,
-                  )
+                  await copyLink(`https://waktuindonesiamemilih.id/invite/${encodeURIComponent(user.email)}/true`)
                 }
               }}
               disabled={successCopy}
