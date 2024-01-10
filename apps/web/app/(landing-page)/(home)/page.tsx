@@ -13,53 +13,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Counter } from './couter'
 import { db } from '@repo/database'
-import { Metadata, ResolvingMetadata } from 'next'
-import parseUrl from '@/lib/parse-url'
 
 interface Props {
-  params: any
   searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export async function generateMetadata(
-  { params: _, searchParams }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const ref = searchParams.ref ? decodeURIComponent(searchParams.ref.toString()) : undefined
-
-  const showImageParam = searchParams.showImage ? decodeURIComponent(searchParams.showImage.toString()) : undefined
-
-  const showImage = showImageParam ? (JSON.parse(showImageParam) === true ? true : false) : false
-
-  const previousImages = (await parent).openGraph?.images || []
-
-  const user = await db.user.findFirst({ where: { email: ref }, include: { vote: { include: { candidate: true } } } })
-
-  if (ref && user && user.vote) {
-    return {
-      title: 'Kamu diundang untuk vote di Waktu Indonesia Memilih',
-      openGraph: {
-        images: [
-          {
-            url: parseUrl(
-              `/api/og?showImage=${showImage}&voteNumber=${user.vote.voteNumber}&nomorUrut=${
-                user.vote.candidate.nomorUrut
-              }&datetime=${user.vote.createdAt.toISOString()}`,
-            ).href,
-            width: 1200,
-            height: 630,
-          },
-        ],
-      },
-    }
-  }
-
-  return {
-    title: 'Waktu Indonesia Memilih',
-    openGraph: {
-      images: [...previousImages],
-    },
-  }
 }
 
 export default async function Page({ searchParams }: Props) {

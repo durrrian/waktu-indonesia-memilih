@@ -1,29 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { ImageResponse } from 'next/og'
-import { LogoWIMPutih } from './logo-wim-putih'
 import { LogoWIM } from './logo-wim'
+import { LogoWIMPutih } from './logo-wim-putih'
 import { No1 } from './no-1'
 import { No2 } from './no-2'
 import { No3 } from './no-3'
+import { db } from '@repo/database'
 
 export const runtime = 'edge'
 
-export const revalidate = false
+export const alt = 'Kamu diundang ke Waktu Indonesia Memilih'
 
-export async function GET(request: NextRequest) {
-  const showImageParam = request.nextUrl.searchParams.get('showImage')
-  const voteNumberParam = request.nextUrl.searchParams.get('voteNumber')
-  const nomorUrutParam = request.nextUrl.searchParams.get('nomorUrut')
-  const datetimeParam = request.nextUrl.searchParams.get('datetime')
+export const size = {
+  width: 1200,
+  height: 630,
+}
 
-  if (!showImageParam || !voteNumberParam || !nomorUrutParam || !datetimeParam) {
-    return NextResponse.json({ error: 'Missing query params' }, { status: 400 })
-  }
+export const contentType = 'image/png'
 
-  const showImage = JSON.parse(showImageParam) === true ? true : false
-  const voteNumber = parseInt(voteNumberParam)
-  const nomorUrut = parseInt(nomorUrutParam)
-  const datetime = new Date(datetimeParam).toLocaleString('id-ID', { dateStyle: 'long' })
+export default async function Image({ params }: { params: { email: string; showImage: string } }) {
+  const showImage = JSON.parse(params.showImage) === true ? true : false
+
+  const email = decodeURIComponent(params.email)
+
+  const user = await db.user.findFirst({ where: { email }, include: { vote: { include: { candidate: true } } } })
 
   return new ImageResponse(
     (
@@ -72,7 +71,7 @@ export async function GET(request: NextRequest) {
                     <div>Peserta</div>
                     <div>voting</div>
                     <div>ke</div>
-                    <div style={{ fontWeight: 900, display: 'flex' }}>{voteNumber.toLocaleString()}</div>
+                    <div style={{ fontWeight: 900, display: 'flex' }}>{user?.vote?.voteNumber.toLocaleString()}</div>
                   </div>
 
                   <div
@@ -104,13 +103,13 @@ export async function GET(request: NextRequest) {
                     padding: '8px 20px',
                   }}
                 >
-                  {datetime}
+                  {user?.vote?.createdAt.toLocaleString('id-ID', { dateStyle: 'long' })}
                 </div>
 
                 {(() => {
-                  if (nomorUrut === 1) return <No1 />
-                  if (nomorUrut === 2) return <No2 />
-                  if (nomorUrut === 3) return <No3 />
+                  if (user?.vote?.candidate.nomorUrut === 1) return <No1 />
+                  if (user?.vote?.candidate.nomorUrut === 2) return <No2 />
+                  if (user?.vote?.candidate.nomorUrut === 3) return <No3 />
                 })()}
               </div>
             )
@@ -149,7 +148,7 @@ export async function GET(request: NextRequest) {
                   <div>Peserta</div>
                   <div>voting</div>
                   <div>ke</div>
-                  <div style={{ fontWeight: 900, display: 'flex' }}>{voteNumber.toLocaleString()}</div>
+                  <div style={{ fontWeight: 900, display: 'flex' }}>{user?.vote?.voteNumber.toLocaleString()}</div>
                 </div>
 
                 <div
@@ -181,16 +180,16 @@ export async function GET(request: NextRequest) {
                   padding: '10px 25px',
                 }}
               >
-                {datetime}
+                {user?.vote?.createdAt.toLocaleString('id-ID', { dateStyle: 'long' })}
               </div>
             </div>
           )
         })()}
       </div>
     ),
+    // ImageResponse options
     {
-      width: 1200,
-      height: 630,
+      ...size,
     },
   )
 }
