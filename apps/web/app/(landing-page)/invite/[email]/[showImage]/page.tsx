@@ -21,10 +21,14 @@ export async function generateMetadata({ params, searchParams: _ }: Props, __: R
     title: 'Kamu diundang untuk vote di Waktu Indonesia Memilih',
     openGraph: {
       images: [
-        parseUrl(
-          `/api/og?showImage=${showImage}&voteNumber=${user?.vote?.voteNumber}&nomorUrut=${user?.vote?.candidate
-            .nomorUrut}&datetime=${user?.vote?.createdAt.toISOString()}`,
-        ).href,
+        {
+          url: parseUrl(
+            `/api/og?showImage=${showImage}&voteNumber=${user?.vote?.voteNumber}&nomorUrut=${user?.vote?.candidate
+              .nomorUrut}&datetime=${user?.vote?.createdAt.toISOString()}`,
+          ).href,
+          width: 1200,
+          height: 630,
+        },
       ],
     },
   }
