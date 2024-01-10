@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { CopyButton } from './copy-button'
 import { Metadata } from 'next'
+import parseUrl from '@/lib/parse-url'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -19,9 +20,9 @@ export default async function Page() {
 
   if (!user) return redirectToSignIn()
 
-  if (!user.provinsi) return redirect('/form/1')
+  if (!user.provinsi) return redirect(parseUrl('/form/1').href)
 
-  if (!user.rentanUsia) return redirect('/form/2')
+  if (!user.rentanUsia) return redirect(parseUrl('/form/2').href)
 
   if (user.rentanUsia !== 'UNDER_17') return notFound()
 

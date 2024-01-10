@@ -4,6 +4,7 @@ import { db } from '@repo/database'
 import { currentUser } from '@/lib/current-user'
 import { redirect } from 'next/navigation'
 import { AfterVote } from './after-vote'
+import parseUrl from '@/lib/parse-url'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -14,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const user = await currentUser()
 
-  if (!user) return redirect('/login')
+  if (!user) return redirect(parseUrl('/login').href)
 
   const vote = user.vote
 

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Form } from './form'
 import { redirectToSignIn } from '@clerk/nextjs'
+import parseUrl from '@/lib/parse-url'
 
 export default async function Page() {
   const user = await currentUser()
@@ -15,9 +16,9 @@ export default async function Page() {
   const provinsi = user.provinsi
   const rentanUsia = user.rentanUsia
 
-  if ((rentanUsia && !provinsi) || (!rentanUsia && !provinsi)) return redirect('/form/1')
-  if (rentanUsia && provinsi && !user.vote) return redirect('/form/3')
-  if (user.vote && rentanUsia && provinsi) return redirect('/vote')
+  if ((rentanUsia && !provinsi) || (!rentanUsia && !provinsi)) return redirect(parseUrl('/form/1').href)
+  if (rentanUsia && provinsi && !user.vote) return redirect(parseUrl('/form/3').href)
+  if (user.vote && rentanUsia && provinsi) return redirect(parseUrl('/vote').href)
 
   return (
     <Card className={cn('w-full mx-auto max-w-[400px] h-fit', 'bg-background text-foreground')}>

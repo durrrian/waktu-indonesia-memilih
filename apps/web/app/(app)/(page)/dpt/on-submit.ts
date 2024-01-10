@@ -5,6 +5,7 @@ import { FormSchema } from './form'
 import { currentUser } from '@/lib/current-user'
 import getDpt from 'defer/src/getDpt'
 import { redirect } from 'next/navigation'
+import parseUrl from '@/lib/parse-url'
 
 export const onSubmit = async (data: z.infer<typeof FormSchema>) => {
   const user = await currentUser()
@@ -13,5 +14,5 @@ export const onSubmit = async (data: z.infer<typeof FormSchema>) => {
 
   await getDpt(user.id, data.noKtp)
 
-  return redirect('/dpt')
+  return redirect(parseUrl('/dpt').href)
 }

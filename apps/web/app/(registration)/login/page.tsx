@@ -6,6 +6,7 @@ import { Metadata } from 'next'
 import { SigninWithGoogle } from './signin-with-google'
 import { Logo } from '@/components/logo'
 import { currentUser } from '@/lib/current-user'
+import parseUrl from '@/lib/parse-url'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -20,7 +21,7 @@ interface Props {
 export default async function Page({ searchParams }: Props) {
   const user = await currentUser()
 
-  if (user) return redirect('/vote')
+  if (user) return redirect(parseUrl('/vote').href)
 
   return (
     <Card className={cn('w-fit mx-auto max-w-[400px] h-96', 'bg-background text-foreground')}>

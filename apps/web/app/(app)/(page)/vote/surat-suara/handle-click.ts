@@ -4,6 +4,7 @@ import { currentUser } from '@/lib/current-user'
 import { db } from '@repo/database'
 import { redirect } from 'next/navigation'
 import sendAfterVoteEmail from 'defer/src/sendAfterVoteEmail'
+import parseUrl from '@/lib/parse-url'
 
 export const handleClick = async (nomorUrut: number) => {
   const user = await currentUser()
@@ -22,5 +23,5 @@ export const handleClick = async (nomorUrut: number) => {
 
   await sendAfterVoteEmail(user.email, user.name, candidate.nomorUrut as 1 | 2 | 3)
 
-  redirect('/vote')
+  redirect(parseUrl('/vote').href)
 }

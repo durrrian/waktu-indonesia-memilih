@@ -6,6 +6,7 @@ import { TotalVote } from './total-vote'
 import { VotesGroupbyAge } from './votes-groupby-age'
 import { VotesGroupbyProvince } from './votes-groupby-province'
 import { db } from '@repo/database'
+import parseUrl from '@/lib/parse-url'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -16,9 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const user = await currentUser()
 
-  if (!user) return redirect('/login')
+  if (!user) return redirect(parseUrl('/login').href)
 
-  if (!user.vote) return redirect('/vote')
+  if (!user.vote) return redirect(parseUrl('/vote').href)
 
   const vote = await db.vote.findMany({ include: { user: true, candidate: true } })
 

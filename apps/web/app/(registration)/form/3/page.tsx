@@ -1,5 +1,6 @@
 import { Logo } from '@/components/logo'
 import { currentUser } from '@/lib/current-user'
+import parseUrl from '@/lib/parse-url'
 import { redirectToSignIn } from '@clerk/nextjs'
 import cn from '@repo/tailwind-config/cn'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button } from '@repo/web-ui/components'
@@ -11,13 +12,13 @@ export default async function Page() {
 
   if (!user) return redirectToSignIn()
 
-  if (!user.provinsi) return redirect('/form/1')
+  if (!user.provinsi) return redirect(parseUrl('/form/1').href)
 
-  if (!user.rentanUsia) return redirect('/form/2')
+  if (!user.rentanUsia) return redirect(parseUrl('/form/2').href)
 
-  if (user.rentanUsia === 'UNDER_17') return redirect('/not-allowed')
+  if (user.rentanUsia === 'UNDER_17') return redirect(parseUrl('/not-allowed').href)
 
-  if (user.vote) return redirect('/vote')
+  if (user.vote) return redirect(parseUrl('/vote').href)
 
   return (
     <Card className={cn('w-full mx-auto max-w-[500px] h-fit', 'bg-background text-foreground select-none')}>

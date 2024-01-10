@@ -5,6 +5,8 @@ import { db } from '@repo/database'
 
 export const runtime = 'edge'
 
+export const revalidate = 1
+
 export async function GET(request: NextRequest) {
   const user = await currentUser()
 
