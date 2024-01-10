@@ -33,11 +33,19 @@ export async function generateMetadata(
 
   const previousImages = (await parent).openGraph?.images || []
 
-  if (ref) {
+  const user = await db.user.findFirst({ where: { email: ref }, include: { vote: { include: { candidate: true } } } })
+
+  if (ref && user && user.vote) {
     return {
       title: 'Kamu diundang untuk vote di Waktu Indonesia Memilih',
       openGraph: {
-        images: [parseUrl(`/api/og?ref=${encodeURIComponent(ref)}&showImage=${showImage}`).href],
+        images: [
+          parseUrl(
+            `/api/og?showImage=${showImage}&voteNumber=${user.vote.voteNumber}&nomorUrut=${
+              user.vote.candidate.nomorUrut
+            }&datetime=${user.vote.createdAt.toISOString()}`,
+          ).href,
+        ],
       },
     }
   }

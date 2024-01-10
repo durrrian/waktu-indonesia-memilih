@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ImageResponse } from 'next/og'
-import { db } from '@repo/database'
 import { LogoWIMPutih } from './logo-wim-putih'
 import { LogoWIM } from './logo-wim'
 import { No1 } from './no-1'
@@ -12,30 +11,19 @@ export const runtime = 'edge'
 export const revalidate = false
 
 export async function GET(request: NextRequest) {
-  const refParam = request.nextUrl.searchParams.get('ref')
   const showImageParam = request.nextUrl.searchParams.get('showImage')
+  const voteNumberParam = request.nextUrl.searchParams.get('voteNumber')
+  const nomorUrutParam = request.nextUrl.searchParams.get('nomorUrut')
+  const datetimeParam = request.nextUrl.searchParams.get('datetime')
 
-  const ref = refParam ? decodeURIComponent(refParam) : undefined
-
-  if (!ref || !showImageParam) return NextResponse.json({ error: 'Missing query params' }, { status: 400 })
+  if (!showImageParam || !voteNumberParam || !nomorUrutParam || !datetimeParam) {
+    return NextResponse.json({ error: 'Missing query params' }, { status: 400 })
+  }
 
   const showImage = JSON.parse(showImageParam) === true ? true : false
-
-  const user = await db.user.findFirst({ where: { email: ref } })
-
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const vote = await db.vote.findFirst({ where: { userId: user.id }, include: { candidate: true } })
-
-  if (!vote) return NextResponse.json({ error: 'Vote not found' }, { status: 404 })
-
-  const nomorUrut = vote.candidate.nomorUrut
-
-  const voteNumber = vote.voteNumber
-
-  const datetime = new Date(vote.createdAt)
-
-  const datetimeStr = datetime.toLocaleString('id-ID', { dateStyle: 'long' })
+  const voteNumber = parseInt(voteNumberParam)
+  const nomorUrut = parseInt(nomorUrutParam)
+  const datetime = new Date(datetimeParam).toLocaleString('id-ID', { dateStyle: 'long' })
 
   return new ImageResponse(
     (
@@ -116,7 +104,7 @@ export async function GET(request: NextRequest) {
                     padding: '8px 20px',
                   }}
                 >
-                  {datetimeStr}
+                  {datetime}
                 </div>
 
                 {(() => {
@@ -193,7 +181,7 @@ export async function GET(request: NextRequest) {
                   padding: '10px 25px',
                 }}
               >
-                {datetimeStr}
+                {datetime}
               </div>
             </div>
           )
