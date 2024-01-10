@@ -125,7 +125,9 @@ export const AfterVote = ({ vote, user }: Props) => {
               onClick={async () => {
                 setLoading(true)
 
-                const response = await fetch(`/api/download-image?showImage=${current === 1 ? 'false' : 'true'}`)
+                const response = await fetch(`/api/download-image?showImage=${current === 1 ? 'false' : 'true'}`, {
+                  cache: 'no-store',
+                })
                 const blob = await response.blob()
                 const url = window.URL.createObjectURL(blob)
                 const a = document.createElement('a')
