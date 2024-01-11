@@ -56,7 +56,10 @@ export function Form() {
       <form
         onSubmit={form.handleSubmit((data) => {
           handleSubmit(data)
-          router.push('/form/2')
+
+          setTimeout(() => {
+            router.push('/form/2')
+          }, 500)
         })}
         className='w-full grid gap-20'
       >
