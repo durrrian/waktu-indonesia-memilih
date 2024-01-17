@@ -88,6 +88,7 @@ export default async function Page({ searchParams }: Props) {
                     <section className='grid gap-2'>
                       <p className='text-lg font-medium'>👀 Voting dulu buat liat hasilnya.</p>
                       <p>Tenang, data kamu dijamin aman.</p>
+                      <p className='text-xs'>Data voting di update secara real-time.</p>
                     </section>
 
                     <Link href='/vote' className='w-full'>
