@@ -24,24 +24,24 @@ export const Footer = () => {
         </p>
 
         <p>
-          Oiya, codingannya kita buat open-source, jadi cek{' '}
+          Oiya, codingannya kami buat open-source, jadi kamu bisa cek{' '}
           <Link href='https://github.com/durrrian/waktu-indonesia-memilih' className='underline' target='_blank'>
             Github
           </Link>{' '}
-          kita yaa!
+          repository ini ya!
         </p>
 
-        <section className='flex items-center justify-between gap-x-4 flex-wrap'>
-          <section className='flex items-center justify-center w-fit h-fit flex-wrap gap-x-2'>
-            <Link href='/kebijakan-privasi' className='underline' target='_blank'>
+        <section className='flex items-center justify-between gap-x-4 flex-wrap pt-10'>
+          <section className='flex items-center justify-center w-fit h-fit flex-wrap gap-x-2 md:gap-x-6'>
+            <Link href='/kebijakan-privasi' className='underline text-sm' target='_blank'>
               Kebijakan Privasi
             </Link>
-            <Link href='/terms-of-service' className='underline' target='_blank'>
+            <Link href='/terms-of-service' className='underline text-sm' target='_blank'>
               Terms of Service
             </Link>
           </section>
 
-          <p>Durrrian {new Date().getFullYear()}</p>
+          <p className='text-sm'>Durrrian {new Date().getFullYear()}</p>
         </section>
       </section>
     </footer>
