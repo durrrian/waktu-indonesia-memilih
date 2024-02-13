@@ -22,6 +22,7 @@ model User {
   provinsi        Provinsi?
   vote            Vote?
   dpt             Dpt?
+  notionPageId    String?
 }
 
 enum RentanUsia {

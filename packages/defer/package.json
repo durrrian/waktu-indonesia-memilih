@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "@defer/client": "^1.14.1",
+    "@notionhq/client": "^2.2.14",
     "@repo/database": "workspace:*",
     "@repo/react-email": "workspace:*",
     "@types/react": "^18.2.45",
