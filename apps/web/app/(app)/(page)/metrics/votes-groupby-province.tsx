@@ -89,11 +89,11 @@ export const VotesGroupbyProvince = ({ vote }: Props) => {
   }, [socket])
 
   return (
-    <section className='bg-background border border-border rounded-lg p-4 grid gap-8'>
-      <h6 className='font-medium text-xl'>Hasil berdasarkan lokasi</h6>
+    <section className='bg-background border-border grid gap-8 rounded-lg border p-4'>
+      <h6 className='text-xl font-medium'>Hasil berdasarkan lokasi</h6>
       <ResponsiveContainer width='100%' height={2000}>
         <BarChart width={500} height={300} data={makePercentage(data)} layout='vertical'>
-          <XAxis type='number' />
+          <XAxis type='number' domain={[0, 100]} ticks={[0, 50, 100]} />
 
           <YAxis type='category' dataKey='name' mirror={true} />
 
@@ -104,7 +104,7 @@ export const VotesGroupbyProvince = ({ vote }: Props) => {
               const maxValue = Math.max(...payload.map((entry) => Number(entry.value)))
 
               return (
-                <div className='bg-secondary p-4 rounded-lg grid gap-4'>
+                <div className='bg-secondary grid gap-4 rounded-lg p-4'>
                   <Badge className={cn('w-fit')}>{label.split('_').join(' ')}</Badge>
 
                   <section>
@@ -131,11 +131,11 @@ export const VotesGroupbyProvince = ({ vote }: Props) => {
 
           <Legend
             content={({ payload }) => (
-              <ul className='flex items-center justify-center flex-wrap gap-x-8 gap-y-4 mt-4'>
+              <ul className='mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-4'>
                 {payload?.map((entry, index) => {
                   return (
                     <li key={`item-${index}`} className='flex items-center justify-center gap-1'>
-                      <div className='w-4 h-4 rounded-full' style={{ backgroundColor: entry.color }} />
+                      <div className='h-4 w-4 rounded-full' style={{ backgroundColor: entry.color }} />
                       {namaKandidat[index]}
                     </li>
                   )

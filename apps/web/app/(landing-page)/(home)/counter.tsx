@@ -34,7 +34,7 @@ export const Counter = ({ initialData }: Props) => {
   }, [socket])
 
   return (
-    <section className='flex flex-col items-center justify-between bg-background rounded-lg shadow-sm p-6 border border-border gap-y-4'>
+    <section className='bg-background border-border flex flex-col items-center justify-between gap-y-4 rounded-lg border p-6 shadow-sm'>
       <section className='w-full'>
         <div className='flex items-center justify-start'>
           {voteCount
@@ -47,21 +47,23 @@ export const Counter = ({ initialData }: Props) => {
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <h3 className='text-4xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-primary to-foreground'>
+                <h3 className='from-primary to-foreground bg-gradient-to-r bg-clip-text text-4xl font-medium text-transparent'>
                   {str}
                 </h3>
               </motion.div>
             ))}
         </div>
 
-        <p className='text-muted-foreground'>Orang sudah voting pilihan mereka. Seluruh data dijamin aman.</p>
+        <p className='text-muted-foreground'>Orang sudah voting pilihan mereka. Hasil voting sudah ditutup.</p>
       </section>
 
-      <Link href='/vote' className='w-full'>
+      <p>Semoga Indonesia maju!</p>
+
+      {/* <Link href='/vote' className='w-full'>
         <Button className={cn('w-full')} type='button' tabIndex={-1}>
           Ikutan voting
         </Button>
-      </Link>
+      </Link> */}
     </section>
   )
 }

@@ -45,8 +45,8 @@ export const Header = () => {
   })
 
   return (
-    <nav className='w-full h-fit flex items-center justify-between max-w-[1400px] md:px-2 px-4 mx-auto pt-10 pb-2'>
-      <DropdownMenu>
+    <nav className='mx-auto flex h-fit w-full max-w-[1400px] items-center justify-between px-4 pb-2 pt-10 md:px-2'>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant='outline'>Menu</Button>
         </DropdownMenuTrigger>
@@ -83,9 +83,9 @@ export const Header = () => {
             <DropdownMenuShortcut>⇧Q</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
 
-      <Link href='/' className='block w-fit h-fit'>
+      <Link href='/' className='block h-fit w-fit'>
         <Logo />
       </Link>
 
