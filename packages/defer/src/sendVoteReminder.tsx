@@ -31,4 +31,9 @@ async function sendVoteReminder() {
   })
 }
 
-export default defer.cron(sendVoteReminder, '0 3 * * *', { retry: 5 })
+// export default defer.cron(sendVoteReminder, '0 3 * * *', { retry: 5 })
+
+export default defer(sendVoteReminder, {
+  concurrency: 10,
+  retry: 5,
+})

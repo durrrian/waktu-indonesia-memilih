@@ -115,4 +115,9 @@ async function updateNotionDb() {
   })
 }
 
-export default defer.cron(updateNotionDb, '0 10 * * *', { retry: 5 })
+// export default defer.cron(updateNotionDb, '0 10 * * *', { retry: 5 })
+
+export default defer(updateNotionDb, {
+  concurrency: 10,
+  retry: 5,
+})
